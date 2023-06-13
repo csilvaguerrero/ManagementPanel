@@ -1,0 +1,314 @@
+﻿@model PagedList.IPagedList<managementPanel.Models.Tareas>
+
+@using managementPanel.Models
+@using PagedList.Mvc
+@using PagedList;
+
+@{
+    DB_ManagementEntities contexto = new DB_ManagementEntities();
+
+    var tareas = Model;
+
+    int[] pageSizes = new int[] { 10, 25, 50, 100, int.MaxValue };
+
+    var pageNumber = ViewBag.pageNumber ?? 1;
+    var pageSize = ViewBag.pageSize ?? 10;
+
+    Type clase = typeof(Tareas);
+
+    List<Usuarios> usuarios = contexto.Usuarios.ToList();
+
+    if (((Usuarios)Session["usuario"]).Usuario.Equals("admin"))
+    {
+        usuarios = contexto.Usuarios.ToList();
+    }
+    else if (((Usuarios)Session["usuario"]).Admin == true)
+    {
+        var usuarioActual = (Usuarios)Session["usuario"];
+        var idsEquipos = usuarioActual.Equipos.Select(e => e.IdEquipo);
+        usuarios = contexto.Usuarios.Where(u => u.Equipos.Any(e => idsEquipos.Contains(e.IdEquipo))).ToList();
+    }
+
+    List<Proyectos> proyectos = new List<Proyectos>();
+    foreach (Proyectos p in contexto.Proyectos.ToList())
+    {
+        if (p.IdUsuario == ((Usuarios)Session["usuario"]).IdUsuario)
+        {
+            proyectos.Add(p);
+        }
+    }
+
+}
+
+<h2>Listar Tareas</h2>
+
+<div class="cajaFiltros">
+
+    @if (((Usuarios)Session["usuario"]).Admin == true)
+    {
+        <form method="post">
+            <div class="filtros">
+                <label>Usuarios: </label>
+                <select class="form-control" name="Usuario" onchange="enviarFormulario()">
+                    <option disabled selected>Elige un usuario</option>
+                    <option value="Ver todas">Ver todas las tareas</option>
+                    @foreach (Usuarios u in usuarios)
+                    {
+                        if (!u.Usuario.Equals("admin"))
+                        {
+                            <option value="@u.Usuario">@u.Usuario</option>
+                        }
+                    }
+                </select>
+            </div>
+        </form>
+    }
+
+    <div class="filtros">
+        @using (Html.BeginForm("ListarTareas", "Tarea", FormMethod.Post))
+        {
+            <input type="text" name="buscar" id="buscar" placeholder="Buscar" />
+            <button type="submit" id="botonBuscar" class="botonBuscar">
+                <span class="material-icons-outlined">search</span>
+            </button>
+
+            <input type="hidden" name="size" value="@ViewBag.pageSize." />
+
+        }
+    </div>
+    <div class="filtros">
+        <label>Nº de registros:</label>
+        <select class="form-control" onchange="window.location.href=this.value">
+            @foreach (var size in pageSizes)
+            {
+                <option value="@Url.Action("ListarTareas", new { pageS = size, buscar = ViewBag.buscarC })" @(Model.PageSize == size ? "selected" : "")>@(size == int.MaxValue ? "Todos" : size.ToString())</option>
+            }
+        </select>
+    </div>
+    <div class="filtros">
+        <label>Orden:</label>
+        <select class="form-control" onchange="window.location.href=this.value">
+            @foreach (var campo in clase.GetProperties())
+            {
+                if (!campo.Name.Equals("IdTarea") && !campo.Name.Equals("IdUsuario"))
+                {
+                    <option value="@Url.Action("ListarTareas", new { size = ViewBag.pageSize, campoOrden = campo.Name })" @(ViewBag.campo == campo.Name ? " selected" : "")>@campo.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <a href="#" onclick="eliminarTodos()" class="enl Eliminar">
+        <span class="material-icons-outlined">delete</span>
+    </a>
+    <a id="" href="@Url.Action("TableroTareas", "Tarea")" class="enl Descargar">
+        <span class="material-symbols-outlined iconosTrabajo">
+            table_chart
+        </span>
+    </a>
+</div>
+<div class="cajaTablas">
+    <table class="table">
+        <thead>
+            <tr class="headTabla">
+                <th><a href="@Url.Action("ListarTareas", new {campoOrden = "Titulo"})">Titulo</a></th>
+                @if (((Usuarios)Session["usuario"]).Admin == true)
+                {
+                    <th><a href="@Url.Action("ListarTareas", new { campoOrden = "Usuarios" })">Nombre usuario</a></th>
+                }
+                <th><a href="@Url.Action("ListarTareas", new {campoOrden = "Horas"})">Horas</a></th>
+                <th><a href="@Url.Action("ListarTareas", new {campoOrden = "FechaFin"})">Fecha Fin</a></th>
+                <th><a href="@Url.Action("ListarTareas", new {campoOrden = "Estado"})">Estado</a></th>
+                <th>Seleccionar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var datos in tareas)
+            {
+                <tr class="hoverTabla">
+                    <td>
+                        <p>@datos.Titulo</p>
+                    </td>
+
+                    @if (((Usuarios)Session["usuario"]).Admin == true)
+                    {
+                        foreach (var user in contexto.Usuarios)
+                        {
+                            if (user.IdUsuario == datos.IdUsuario)
+                            {
+                                <td>@user.Nombre</td>
+                            }
+                        }
+                    }
+                    <td>
+                        @if (datos.Horas == null)
+                        {
+                            <span>0 h</span>
+                        }
+                        else
+                        {
+                            <span>@datos.Horas h</span>
+                        }
+                    </td>
+                    <td>
+                        @if (datos.FechaFin == null)
+                        {
+                            <span>No tiene fecha</span>
+                        }
+                        else
+                        {
+                            @Convert.ToDateTime(datos.FechaFin).ToString("dd/MM/yyyy")
+                        }
+                    </td>
+                    <td>
+                        @datos.Estado
+                    </td>
+                    <td>
+                        <input type="checkbox" id="radioButtonEliminar" value=@datos.IdTarea>
+                    </td>
+                </tr>
+            }            
+            <tr class="filaAnadir" id="btnOpenForm" onclick="abrirFormulario()">
+                <td colspan="6">
+                    <span>+</span>
+                </td>
+            </tr>            
+        </tbody>
+    </table>
+</div>
+<div class="pagination-container">
+    @Html.PagedListPager(Model, page => Url.Action("ListarTareas", "Tarea", new { page, size = ViewBag.pageSize }))
+</div>
+
+
+<div class="form-popup-bg">
+    <div class="form-container">
+        <button id="btnCloseForm" class="close-button" onclick="cerrarFormulario()">X</button>
+        <h1>AÑADIR NUEVA TAREA</h1>
+        <p>Complete la información para añadir una nueva tarea.</p>
+
+        @using (Html.BeginForm("InsertarTareas", "Tarea", FormMethod.Post))
+        {
+            <div class="divFormTareas">
+                @if (((Usuarios)Session["usuario"]).Admin == true)
+                {
+                    <label for="">Encargado</label>
+                    <select class="form-control" name="IdUsuario">
+                        @foreach (var user in usuarios)
+                        {
+                            <option value="@user.IdUsuario">@user.Nombre</option>
+                        }
+                    </select>
+                }
+                else
+                {
+                    <input type="hidden" name="IdUsuario" value="@(((Usuarios)Session["usuario"]).IdUsuario)" />
+                }
+            </div>
+            <div class="divFormTareas">
+                <label for="">Título tarea</label>
+                <input class="form-control" type="text" name="Titulo" required />
+            </div>
+            <div class="divFormTareas">
+                <label for="">Fecha fin</label>
+                <input class="form-control" type="date" name="FechaFin" />
+            </div>
+            <div class="divFormTareas">
+                <label for="">Horas estimadas</label>
+                <input class="form-control" type="text" name="Horas" />
+            </div>
+            <div class="divFormTareas">
+                <label>Proyectos: </label>
+                <select class="form-control" name="IdProyecto">
+                    <option disabled selected>Elige un proyecto</option>
+                    <option value="">Sin proyecto</option>
+                    @foreach (Proyectos p in proyectos)
+                    {
+                        <option value="@p.Codigo">@p.Nombre</option>
+                    }
+                </select>
+            </div>
+            <div class="divFormTareas">
+                <label for="">Estado</label>
+                <select class="form-control" name="Estado">
+                    <option value="Por hacer">Por hacer</option>
+                    <option value="En curso">En curso</option>
+                    <option value="Bloqueo">Bloqueo</option>
+                    <option value="Lista">Lista</option>
+                </select>
+            </div>
+            <div class="divFormTareas">
+                <label for="">Descripción</label>
+                <textarea class="form-control" type="date" name="Descripcion"></textarea>
+            </div>
+            <button type="submit" id="botonAnadirtarea" value="Registrar">AÑADIR</button>
+        }
+    </div>
+</div>
+<script>
+    window.onload = cerrarFormulario();
+
+    function abrirFormulario() {
+        $('.form-popup-bg').addClass('is-visible');
+    }
+
+    function cerrarFormulario() {
+        $('.form-popup-bg').removeClass('is-visible');
+    }
+
+    function eliminarTodos() {
+        const radioButtons = document.querySelectorAll('input[type="checkbox"]');  
+
+        const valoresSeleccionados = [];  
+        radioButtons.forEach(radioButton => {
+            if (radioButton.checked) {
+                valoresSeleccionados.push(radioButton.value);
+                radioButton.checked = false;
+            }
+        }); 
+
+        Swal.fire({
+            title: '¿Estás seguro de que deseas borrar las tareas seleccionadas?',
+            showDenyButton: true,
+            showCancelButton: true,
+            showConfirmButton: false, 
+
+
+            denyButtonText: 'Borrar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isDenied) { 
+
+                var uri = '@Url.Action("EliminarTareas", "Tarea")';
+                $.ajax({
+                    url: uri,
+                    data: JSON.stringify(valoresSeleccionados),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    success: function() {
+                    var url = '@Url.Action("ListarTareas", "Tarea")';
+                    window.location.href = url; 
+                    }
+                });
+            }
+            else
+            {
+                Swal.fire('Cancelado', '', 'error')
+                resolve('Cancelar');
+            }
+        })
+    }
+
+    var usuarioSeleccionado;
+    function enviarFormulario() {
+        var usuarioSeleccionado = $('select[name="Usuario"]').val();
+        $.ajax({
+            url: '/Tarea/ListarTareas',
+            type: 'GET',
+            data: { Usuario: usuarioSeleccionado },
+            success: function () {
+                var url = '/Tarea/ListarTareas?Usuario=' + usuarioSeleccionado;
+                window.location.href = url;
+            }
+        });
+    }
+</script>

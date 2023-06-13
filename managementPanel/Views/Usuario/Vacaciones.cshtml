@@ -1,0 +1,305 @@
+﻿@using managementPanel.Models;
+
+@{
+    DB_ManagementEntities contexto = new DB_ManagementEntities();
+
+    int idUser = ((Usuarios)Session["usuario"]).IdUsuario;
+
+    Usuarios usu = contexto.Usuarios.FirstOrDefault(x => x.IdUsuario == idUser);
+
+    List<Usuarios> usuariosSinVacaciones = contexto.Usuarios.Where(x => x.FechaInicioVacaciones == null && x.FechaFinVacaciones == null).ToList();
+    List<Usuarios> usuariosSolicitud = new managementPanel.Controllers.UsuarioController().MisSolicitudes(idUser);    
+    List<Usuarios> usuarios = Model;
+
+    string estado = ViewBag.fechas;
+
+}
+
+
+<script src='~/contentmanagement/FullCalendar/fullcalendar-6.1.6/dist/index.global.js'></script>
+<script src='~/contentmanagement/FullCalendar/fullcalendar-6.1.6/dist/index.global.min.js'></script>
+<script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+<script src="/tdk/scripts/jquery.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="/tdk/scripts/bootstrap.js" type="text/javascript"></script>
+<script src="/tdk/scripts/jquery.dataTables.js" type="text/javascript"></script>
+<script src="/tdk/scripts/dataTables.bootstrap.js" type="text/javascript"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<div id="vacaciones"></div>
+
+<div id="contenidoVacaciones">
+    @if (((Usuarios)Session["usuario"]).Admin == true)
+    {
+        if (usuarios.Count != 0)
+        {
+            <div id="tablaVacaciones">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Usuario</th>
+                            <th>Inicio vacaciones</th>
+                            <th>Fin vacaciones</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var informacion in usuarios)
+                        {
+                            if (informacion.IdUsuario != idUser && informacion.Vacaciones == true)
+                            {
+                                <tr>
+                                    <td>@informacion.Nombre @informacion.Apellidos</td>
+                                    <td>@informacion.Usuario</td>
+                                    <td>@Convert.ToDateTime(informacion.FechaInicioVacaciones).ToString("yyyy/MM/dd")</td>
+                                    <td>@Convert.ToDateTime(informacion.FechaFinVacaciones).ToString("yyyy/MM/dd")</td>
+                                    <td><a href="@Url.Action("EliminarVacaciones", "Usuario", new { idUsuario = informacion.IdUsuario })">Eliminar</a></td>
+                                </tr>
+                            }
+
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        <div id="parrafoSolicitud">
+            <h2>Solicitudes de vacaciones</h2>
+            @if (usuariosSolicitud.Count > 0)
+            {
+                foreach (var datos in usuariosSolicitud)
+                {                    
+                    if (datos.Vacaciones == false && datos.FechaFinVacaciones != null && datos.FechaInicioVacaciones != null)
+                    {
+                        <p>
+                            @datos.Nombre @datos.Apellidos ha solicitado vacaciones desde el <span class="fechaBold">@Convert.ToDateTime(datos.FechaInicioVacaciones).ToString("yyyy/MM/dd")</span> hasta <span class="fechaBold">@Convert.ToDateTime(datos.FechaFinVacaciones).ToString("yyyy/MM/dd")</span>
+                            <br /><br />
+                            <a href="@Url.Action("GestionarVacaciones", "Usuario", new { idUsuario = datos.IdUsuario, estado = "Aceptar" })" class="botonSolicitud">Aceptar</a>
+                            <a href="@Url.Action("GestionarVacaciones", "Usuario", new { idUsuario = datos.IdUsuario, estado = "Cancelar" })" class="botonSolicitud">Cancelar</a>
+                        </p>
+                    }
+
+                }
+            }
+            else
+            {
+                <p>No hay solicitudes de vacaciones</p>
+            }
+
+        </div>
+    }
+
+    @if (!usu.Usuario.Equals("admin"))
+    {
+        <div id="confirmacionVacaciones">
+
+            @if (usu.Vacaciones == true)
+            {
+                <h2>Tus vacaciones están aprobadas</h2>
+
+                <span>Fecha Inicio: <span class="fechaBold">@Convert.ToDateTime(usu.FechaInicioVacaciones).ToString("yyyy/MM/dd")</span></span>
+                <span>Fecha Fin: <span class="fechaBold">@Convert.ToDateTime(usu.FechaFinVacaciones).ToString("yyyy/MM/dd")</span></span>
+            }
+            else
+            {
+                if (usu.FechaInicioVacaciones != null && usu.FechaFinVacaciones != null && usu.Vacaciones == false)
+                {
+                    <h2>Tus vacaciones aún no están aprobadas</h2>
+                    <a href="@Url.Action("EliminarVacaciones", "Usuario", new { idUsuario = usu.IdUsuario })">Eliminar solicitud</a>
+                }
+                else
+                {
+                    <h2>Aún no has solicitado vacaciones</h2>
+                }
+            }
+        </div>
+    }
+
+
+    @if (!usu.Usuario.Equals("admin"))
+    {
+        if (usu.Vacaciones == false)
+        {
+            if (usu.FechaFinVacaciones == null && usu.FechaInicioVacaciones == null)
+            {
+                <div id="elegirVacaciones"><span id="textoElegir">Elige días de vacaciones</span></div>
+            }
+        }
+    }
+
+
+    @if (usu.Usuario.Equals("admin"))
+    {
+        using (Html.BeginForm("CrearVacaciones", "Usuario", FormMethod.Post))
+        {
+            <div id="formularioVacaciones">
+                @if (usuariosSinVacaciones.Count > 0)
+                {
+                    <h3>Usuarios con vacaciones disponibles</h3>
+                    <div>
+                        <label>Usuario: </label>
+                        <select name="idUsuario">
+                            @foreach (var info in usuariosSinVacaciones)
+                            {
+                                if (!info.Usuario.Equals("admin"))
+                                {
+                                    <option value="@info.IdUsuario">@info.Usuario</option>
+                                }
+                            }
+                        </select>
+                        <label>Fecha inicio: </label>
+                        <input type="date" name="fechaInicio" />
+                        <label>Fecha Fin: </label>
+                        <input type="date" name="fechaFin" />
+                    </div>
+
+                    <input type="submit" value="Añadir vacaciones" />
+                }
+                else
+                {
+                    <h3>No hay usuarios con vacaciones disponibles</h3>
+                }
+            </div>
+        }
+    }
+    <div id="fechaSelecta">
+        <div id="fechasElegidas"></div>
+        <button id="botonVacaciones" onclick="reiniciarFechas()">Cancelar fecha</button>
+        <button id="solicitarVacaciones" onclick="solicitarVacaciones()">Solicitar vacaciones</button>
+    </div>
+    @if (estado == "1")
+    {
+        <div id="tieneFechas">
+            <h3>Ya tienes fecha de vacaciones, no puedes pedirla de nuevo</h3>
+        </div>
+    }
+
+</div>
+
+<script>
+
+    let dias = document.getElementsByClassName('fc-daygrid-day-frame')
+    let divF = document.getElementById('fechasElegidas')
+    var fechas = []
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('vacaciones');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            lang: 'es',
+            eventMouseEnter: function (info) {
+                $(info.el).tooltip({
+                    title: info.event.title
+                });
+            },
+            dateClick: function (info) {
+                if (fechas.length < 2) {
+                    fechas.push(info.dateStr)
+                    if (fechas.length == 2) {
+                        mostrarBotones()
+                    }
+                }
+                console.log(fechas)
+            },
+
+            initialView: 'dayGridMonth',
+            locale: 'es',
+
+            monthNames: [
+                'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+            ],
+
+            monthNamesShort: [
+                'ene', 'feb', 'mar', 'abr', 'may', 'jun',
+                'jul', 'ago', 'sep', 'oct', 'nov', 'dic'
+            ],
+
+            dayNames: [
+                'domingo', 'lunes', 'martes', 'miércoles',
+                'jueves', 'viernes', 'sábado'
+            ],
+
+            dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
+            allDayText: 'Todo el día',
+
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+            },
+            buttonText: {
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                list: 'Lista',
+            },
+            events: [
+                @foreach (var vacaciones in usuarios)
+                {                   
+                    if (vacaciones.FechaFinVacaciones != null && vacaciones.FechaInicioVacaciones != null)
+                    {
+                        <text>
+                        {
+                            title: '@vacaciones.Nombre @vacaciones.Apellidos',
+                            start: '@vacaciones.FechaInicioVacaciones.Value.ToString("yyyy-MM-dd")',
+                            end: '@vacaciones.FechaFinVacaciones.Value.ToString("yyyy-MM-dd")',
+                            color: '#FFFFF',
+                            description: 'Desde @vacaciones.FechaInicioVacaciones hasta el @vacaciones.FechaFinVacaciones'
+                        },
+                        </text>                                      
+                    }
+                }
+            ],
+            selectable: true,
+            editable: false,
+            dayMaxEvents: true,
+            firstDay: 1,
+        });
+        calendar.render();
+    });
+
+    function reiniciarFechas() {
+
+        fechas = []
+        divF.textContent = ""
+        $('#fechaSelecta').hide()
+        $('#')
+        $('#elegirVacaciones').show()
+
+        console.log(fechas)
+    }
+
+    function solicitarVacaciones() {
+        $.ajax({
+            url: "/Usuario/SolicitarVacaciones",
+            type: 'POST',
+            data: { fechaInicio: fechas[0], fechaFin: fechas[1] }
+        });
+
+        location.reload()
+        c = 1
+    }
+
+    function elegirFechas() {
+
+        fechas = []
+        $('#elegirDias').hide()
+        $('#vacaciones').show()
+    }
+
+    function mostrarBotones() {
+
+        divF.textContent = "Desde el "+fechas[0]+" hasta el "+fechas[1]
+
+        $('#elegirVacaciones').hide()
+        $('#fechaSelecta').show()
+    }
+
+
+</script>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.6/locale-all.js'></script>

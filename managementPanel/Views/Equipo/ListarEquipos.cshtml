@@ -1,0 +1,183 @@
+﻿@model PagedList.IPagedList<managementPanel.Models.Equipos>
+
+@using managementPanel.Models
+@using PagedList.Mvc
+@using PagedList;
+
+@{
+    if (TempData["msj"] != null)
+    {
+        <script>alert("Error - Equipo no se ha modificado");</script>
+    }
+
+
+    DB_ManagementEntities contexto = new DB_ManagementEntities();
+
+    List<Usuarios> usuarios = contexto.Usuarios.ToList();
+
+    var pageNumber = ViewBag.pageNumber ?? 1;
+    var pageSize = ViewBag.pageSize ?? 5;
+
+    var pagedList = new StaticPagedList<Equipos>(Model, pageNumber, pageSize, Model.Count);
+
+}
+
+
+<h2 class="titulosTabla">Listar Equipos</h2>
+
+@if (TempData["estado"] != "0")
+{
+    <div class="cajaTablas" id="misEquipos">
+        <table class="table">
+            <thead>
+                <tr class="headTabla">
+                    <th>Nombre</th>
+                    @if (!((Usuarios)Session["usuario"]).Admin == false)
+                    {
+                        <th>Usuarios</th>
+                    }
+                    <th>Departamento</th>
+                    <th>Descripcion</th>
+                    @if (((Usuarios)Session["usuario"]).Admin == true)
+                    {
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var equipo in Model)
+                {
+
+                    <tr class="hoverTabla">
+                        <td>@equipo.Nombre</td>
+
+                        @if (!((Usuarios)Session["usuario"]).Admin == false)
+                        {
+                            if (equipo.Usuarios.Count == 0)
+                            {
+                                <td>Sin Usuarios</td>
+                            }
+                            else
+                            {
+                                if (equipo.Usuarios.Count == 1)
+                                {
+                                    <td>
+                                        @foreach (Usuarios u in equipo.Usuarios)
+                                        {
+                                            @u.Nombre @u.Apellidos
+                                        }
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <div class="content-select">
+                                            <select>
+                                                <option value="" disabled selected>USUARIOS</option>
+                                                @foreach (Usuarios u in equipo.Usuarios)
+                                                {
+                                                    <option disabled>@u.Nombre  @u.Apellidos</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </td>
+                                }
+                            }
+                        }
+                        <td>@equipo.Departamento</td>
+
+                        @if (equipo.Descripcion == null)
+                        {
+                            <td>No tiene descripción</td>
+                        }
+                        else
+                        {
+                            <td>@equipo.Descripcion</td>
+                        }
+
+                        @if (((Usuarios)Session["usuario"]).Admin == true)
+                        {
+
+                            <td>
+                                <a href="@Url.Action("EditarEquipos", "Equipo", new { equipoSesion = equipo.IdEquipo, page = pageNumber })" class="btn btn-primary"><span class="material-symbols-outlined">edit_square</span></a>
+                            </td>
+
+                            <td>
+                                @using (Html.BeginForm("EliminarEquipos", "Equipo", FormMethod.Post))
+                                {
+                                    <input type="hidden" name="borrarEquipo" id="borrarEquipo" value="" />
+                                    <input type="hidden" name="equipoSesion" id="equipoSesion" value="" />
+                                    <input type="hidden" name="page" id="page" value="@pageNumber" />
+
+                                    <button type="submit" class="btn btn-danger" onclick="event.preventDefault(); confirmacionBorradoEquipo(@equipo.IdEquipo, '@equipo.Nombre', @equipo.Usuarios.Count).then((opcion) => { document.getElementById('borrarEquipo').value = opcion; document.querySelector('form').submit(); });"><span class="material-symbols-outlined">delete</span></button>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+                @if (((Usuarios)Session["usuario"]).Admin == true)
+                {
+                    <tr class="filaAnadir">
+                        @if (((Usuarios)Session["usuario"]).Usuario.Equals("admin"))
+                        {
+                            <td colspan="7">@Html.ActionLink("+", "InsertarEquipos", "Equipo")</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination-container">
+        @Html.PagedListPager(Model, page => Url.Action("ListarEquipos", "Equipo", new { page, pageSize = ViewBag.pageSize }))
+    </div>
+}
+else
+{
+    <h2 class="noDatos">
+        No hay equipos disponibles
+        @if (((Usuarios)Session["usuario"]).Usuario.Equals("admin"))
+        {
+            <span>@Html.ActionLink("+", "InsertarEquipos", "Equipo")</span>
+        }
+    </h2>
+}
+
+@section scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+}
+<script>
+
+    function confirmacionBorradoEquipo(id, nombre, usuarios) {
+
+        return new Promise((resolve) => {
+            Swal.fire({
+                title: '¿Estás seguro de que deseas borrar el equipo ' + nombre + '?',
+                showDenyButton: true,
+                showCancelButton: true,
+                showConfirmButton: false,
+                denyButtonText: 'Borrar',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isDenied) {
+                    if (usuarios == 0) {
+                        Swal.fire('Operación realizada con éxito', '', 'success')
+                        resolve('Borrar');
+                        let valor = document.getElementById('equipoSesion');
+                        valor.value = nombre
+                        console.log(valor)
+                    }
+                    else {
+                        Swal.fire('El equipo no puede borrarse porque tiene usuarios asociados', '', 'error')
+                    }
+                } else {
+                    Swal.fire('Cancelado', '', 'error')
+                    resolve('Cancelar');
+                }
+            })
+        });
+    }
+
+
+</script>

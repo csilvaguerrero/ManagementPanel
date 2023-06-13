@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "ImportarProyecto";
+
+}
+
+<h2 class="tituloArchivo">Importar Proyecto</h2>
+
+
+
+
+<div class="formularioArchivo">
+    <a href="@Url.Action("ListarProyectos", "Proyecto", new {})" class="cruz"><span class="material-symbols-outlined">close</span></a>
+    @using (Html.BeginForm("ImportarProyecto", "Proyecto", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="invoiceBox">
+            <label for="file">
+                <input type="hidden" name="modificacion" id="modificacion" value="" />
+                <div class="boxFile" data-text="SELECCIONAR UN ARCHIVO">
+                    SELECCIONAR UN ARCHIVO
+                </div>
+            </label>
+            <input id="file" multiple="" name="file" size="6000" type="file" accept=".csv" required>
+        </div>
+
+        <div id="botonesImportar">
+            <button type="submit" class="btnImplementar" onclick="downloadFile()">CSV Ejemplo<br /><span class="material-icons-outlined">cloud_download</span></button>
+            <button type="submit" class="btnImplementar" onclick="arrayObjToCsvEmpty()">CSV Vacío<br /><span class="material-icons-outlined">file_download</span></button>
+            <button type="submit" class="btnImplementar" onclick="event.preventDefault(); confirmarModificacion().then((opcion) => { document.getElementById('modificacion').value = opcion; document.querySelector('form').submit(); });">Importar CSV<br /><span class="material-icons-outlined">cloud_upload</span></button>
+            <div class="ease"></div>
+        </div>
+
+    }
+</div>
+
+@if (ViewBag.Error != null)
+{
+    <div id="errCsv">
+        @ViewBag.Error
+    </div>
+}
+
+<script>
+
+    document.querySelector('#file').addEventListener('change', function (e) {
+        var boxFile = document.querySelector('.boxFile');
+        boxFile.classList.remove('attached');
+        boxFile.innerHTML = boxFile.getAttribute("data-text");
+        if (this.value != '') {
+            var allowedExtensions = /(\.csv)$/i;
+            if (allowedExtensions.exec(this.value)) {
+                boxFile.innerHTML = e.target.files[0].name;
+                boxFile.classList.add('attached');
+            } else {
+                this.value = '';
+                alert('El archivo que intentas subir no está permitido.\nSolo se admiten los archivos .csv');
+                boxFile.classList.remove('attached');
+            }
+        }
+    });
+
+    function confirmarModificacion() {
+        return new Promise((resolve) => {
+            Swal.fire({
+                title: '¿Qué desea hacer?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Sobreescribir',
+                denyButtonText: `Actualizar`,
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Operación realizada con éxito', '', 'success')
+                    resolve('Sobreescribir');
+                } else if (result.isDenied) {
+                    Swal.fire('Operación realizada con éxito', '', 'success')
+                    resolve('Actualizar');
+                } else {
+                    Swal.fire('Ningún cambio producido', '', 'info')
+                    resolve('Cancelar');
+                }
+            })
+        });
+    }
+
+    function arrayObjToCsv(ar) {
+        //comprobamos compatibilidad
+        if (window.Blob && (window.URL || window.webkitURL)) {
+            var contenido = "",
+                d = new Date(),
+                blob,
+                reader,
+                save,
+                clicEvent;
+            //creamos contenido del archivo
+            for (var i = 0; i < ar.length; i++) {
+                //construimos cabecera del csv
+                if (i == 0)
+                    contenido += Object.keys(ar[i]).join(";") + "\n";
+                //resto del contenido
+                contenido += Object.keys(ar[i]).map(function (key) {
+                    return ar[i][key];
+                }).join(";") + "\n";
+            }
+            //creamos el blob
+            blob = new Blob(["\ufeff", contenido], { type: 'text/csv' });
+            //creamos el reader
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                //escuchamos su evento load y creamos un enlace en dom
+                save = document.createElement('a');
+                save.href = event.target.result;
+                save.target = '_blank';
+                //aquí le damos nombre al archivo
+                save.download = "log_" + d.getDate() + "_" + (d.getMonth() + 1) + "_" + d.getFullYear() + ".csv";
+                try {
+                    //creamos un evento click
+                    clicEvent = new MouseEvent('click', {
+                        'view': window,
+                        'bubbles': true,
+                        'cancelable': true
+                    });
+                } catch (e) {
+                    //si llega aquí es que probablemente implemente la forma antigua de crear un enlace
+                    clicEvent = document.createEvent("MouseEvent");
+                    clicEvent.initEvent('click', true, true);
+                }
+                //disparamos el evento
+                save.dispatchEvent(clicEvent);
+                //liberamos el objeto window.URL
+                (window.URL || window.webkitURL).revokeObjectURL(save.href);
+            }
+            //leemos como url
+            reader.readAsDataURL(blob);
+        } else {
+            //el navegador no admite esta opción
+            alert("Su navegador no permite esta acción");
+        }
+    };
+    function arrayObjToCsvEmpty() {
+        var csv = "Nombre;Completado;FechaComienzo;Fase;HorasNormales;HorasEspeciales;HorasReales;FechaInicio;FechaDisenio;FechaValidacion;FechaEnVivo;FechaRecepcion;FechaFin;Cliente;JefeProyecto;Codigo;CodigoOferta;Replanificacion;Incidencias\n";
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.setAttribute("href", url);
+        a.setAttribute("download", "ejemploVacio.csv");
+        a.click();
+    }
+    function downloadFile() {
+        var miArrayDeObjetos = [
+            { Nombre: "WISAG Logistics Solutions GmbH", Completado: "20", FechaComienzo: "29/03/2023", Fase: "Development", HorasNormales: "32", HorasEspeciales: "0", HorasReales: "46", FechaInicio: "06/04/2023", FechaDisenio: "18/04/2023", FechaValidacion: "26/04/2023", FechaEnVivo: "02/05/2023", FechaRecepcion: "09/05/2023", FechaFin: "11/05/2023", Cliente: "WISAG Logistics Solutions GmbH& Co. KG.", JefeProyecto: "monica.murayama", Codigo: "2411017713", CodigoOferta: "1699080-1", Replanificacion: "", Incidencias: "5" },
+            { Nombre: "IMPLANT PROTESIS DENTAL 2004 SL", Completado: "100", FechaComienzo: "10/02/2023", Fase: "RemoteHyperCare", HorasNormales: "0", HorasEspeciales: "0", HorasReales: "0", FechaInicio: "09/02/2023", FechaDisenio: "13/02/2023", FechaValidacion: "15/02/2023", FechaEnVivo: "17/02/2023", FechaRecepcion: "17/02/2023", FechaFin: "20/02/2023", Cliente: "IMPLANT PROTESIS DENTAL 2004 SL", JefeProyecto: "jorge.tornero", Codigo: "1111149467", CodigoOferta: "1699152-1", Replanificacion: "", Incidencias: "1" },
+            { Nombre: "PLASTICOS DEL SEGURA SL", Completado: "5", FechaComienzo: "02/02/2023", Fase: "Kickoff", HorasNormales: "716", HorasEspeciales: "0", HorasReales: "24", FechaInicio: "17/04/2023", FechaDisenio: "15/05/2023", FechaValidacion: "13/10/2023", FechaEnVivo: "01/11/2023", FechaRecepcion: "20/12/2023", FechaFin: "28/12/2023", Cliente: "PLASTICOS DEL SEGURA SL", JefeProyecto: "monica.murayama", Codigo: "1211058803", CodigoOferta: "1645760-1-R2", Replanificacion: "", Incidencias: "5" },
+            { Nombre: "RENAULT ESPAÑA SA", Completado: "95", FechaComienzo: "20/01/2023", Fase: "Ended", HorasNormales: "172", HorasEspeciales: "0", HorasReales: "800", FechaInicio: "16/02/2023", FechaDisenio: "07/03/2023", FechaValidacion: "21/03/2023", FechaEnVivo: "23/03/2023", FechaRecepcion: "23/03/2023", FechaFin: "09/03/2023", Cliente: "RENAULT ESPAÑA SA", JefeProyecto: "aitor.garcia", Codigo: "1211058530", CodigoOferta: "1673645-1", Replanificacion: "", Incidencias: "2" },
+            { Nombre: "TRANSPORTES ARNIELLA SA", Completado: "40", FechaComienzo: "09/12/2022", Fase: "Development", HorasNormales: "4", HorasEspeciales: "0", HorasReales: "26", FechaInicio: "27/01/2023", FechaDisenio: "31/03/2023", FechaValidacion: "05/04/2023", FechaEnVivo: "", FechaRecepcion: "", FechaFin: "", Cliente: "TRANSPORTES ARNIELLA SA", JefeProyecto: "aitor.garcia", Codigo: "1311039466", CodigoOferta: "1657569-1", Replanificacion: "", Incidencias: "9" },
+        ];
+        arrayObjToCsv(miArrayDeObjetos);
+    }
+
+</script>

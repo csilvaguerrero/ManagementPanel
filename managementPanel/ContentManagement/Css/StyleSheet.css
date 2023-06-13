@@ -1,0 +1,3232 @@
+﻿﻿﻿* {
+    box-sizing: border-box;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+html, .bodyM {
+    text-align: center;
+    background-image: url("../Img/fondo.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/*-----NAV PLANTILLA  BASE-----*/
+.navPrincipal {
+    width: 100%;
+    margin-bottom: 80px;
+    box-shadow: 0px 5px 10px gray;
+}
+
+a#home {
+    display: flex;
+    align-items: center;
+}
+
+    a#home span {
+        margin-right: 10px;
+        font-size: 35px !important;
+    }
+
+
+a {
+    text-decoration: none;
+    color: #6C6D6A;
+    display: block;
+}
+
+ul {
+    list-style: none;
+    position: relative;
+    text-align: left;
+}
+
+    ul.primary {
+        background: #027373;
+        width: 100%;
+        margin: auto;
+        margin-top: 1vw;
+        display: flex;
+        -moz-box-shadow: 0 0 70px #fff;
+        text-shadow: 0.5px 0.5px 0.5px #0E0E0E;
+        margin-top: 0;
+        font-size: 20px;
+    }
+
+li {
+    float: left;
+}
+
+ul:after {
+    clear: both;
+}
+
+ul:before,
+ul:after {
+    content: " ";
+    display: table;
+}
+
+ul.primary li a {
+    display: block;
+    padding: 20px 30px;
+    text-decoration: none;
+    color: aliceblue;
+    transition: 1s;
+    margin-right: 0px;
+}
+
+ul.primary li:last-child a {
+    border-right: none;
+    text-decoration: none;
+}
+
+ul.primary li a:hover {
+    color: #000;
+    transition: 0.7s;
+}
+
+ul.sub {
+    position: absolute;
+    z-index: 200;
+    box-shadow: 2px 2px 0 #BEBEBE;
+    width: 25%;
+    display: none;
+}
+
+    ul.sub li {
+        float: none;
+        margin: 0;
+    }
+
+        ul.sub li a {
+            border-bottom: 1px solid #038C7F;
+            border-right: none;
+            color: #000;
+            padding: 15px 30px;
+        }
+
+        ul.sub li:last-child a {
+            border-bottom: none;
+        }
+
+        ul.sub li a:hover {
+            color: #000;
+            background: #038C7F;
+        }
+
+ul.primary li:hover ul {
+    display: block;
+    background: #038C7F;
+}
+
+ul.primary li:hover a {
+    background: #A9D9D0;
+    color: #666;
+    text-shadow: none;
+}
+
+ul.primary li:hover > a {
+    color: #000;
+}
+
+@media only screen and (max-width: 600px) {
+    .decor {
+        padding: 3px;
+    }
+
+    .navPrincipal {
+        width: 100%;
+        margin-top: 0px;
+    }
+
+    li {
+        float: none;
+    }
+
+    ul.primary li:hover a {
+        background: none;
+        color: #8B8B8B;
+        text-shadow: 1px 1px #000;
+    }
+
+    ul.primary li:hover ul {
+        display: block;
+        background: #272727;
+        color: #fff;
+    }
+
+    ul.sub {
+        display: block;
+        position: static;
+        box-shadow: none;
+        width: 100%;
+    }
+
+        ul.sub li a {
+            background: #272727;
+            border: none;
+            color: #8B8B8B;
+        }
+
+            ul.sub li a:hover {
+                color: #ccc;
+                background: none;
+            }
+}
+
+#menu {
+    float: left;
+}
+/*----- FIN NAV PLANTILLA  BASE-----*/
+
+
+/*---------DISEÑO TARJETA PERFIL---------*/
+.tituloPerfil {
+    margin: auto;
+    margin-top: 180px;
+    background: #038C7F;
+    width: 30%;
+    box-shadow: 2px 2px 7px #A9D9D0;
+    color: white;
+    border-radius: 5px;
+}
+
+.perfilResponsive {
+    display: flex;
+    align-items: center;
+    width: 850px;
+    padding: 40px 30px 40px 20px;
+    background: #A9D9D0;
+    border-radius: 24px;
+    margin: auto;
+    margin-top: 20px;
+    box-shadow: 2px 2px 10px #023535;
+}
+
+    .perfilResponsive img {
+        max-width: 280px;
+        width: 25vw;
+        height: 300px;
+        object-fit: cover;
+        margin-left: -50px;
+        margin-right: 50px;
+        border-radius: inherit;
+        box-shadow: 0 60px 40px rgb(0 0 0 / 8%);
+        background: #038C7F;
+    }
+
+    .perfilResponsive div {
+        width: 100%;
+    }
+
+#tablaPerfil {
+    width: 100%;
+    font-size: x-large;
+    padding: 10px;
+    background: aliceblue;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px #023535;
+    margin-bottom: 20px;
+}
+
+    #tablaPerfil table {
+        width: 100%;
+    }
+
+        #tablaPerfil table td {
+            text-align: left;
+        }
+
+        #tablaPerfil table span {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+    #tablaPerfil tr {
+        border-bottom: 1px solid black;
+    }
+
+    #tablaPerfil ul {
+        list-style: none;
+        margin-bottom: 0px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 0px;
+    }
+
+        #tablaPerfil ul li {
+            background: #015958;
+            color: white;
+            padding: 0px 5px;
+            border-radius: 10px;
+        }
+
+            #tablaPerfil ul li a {
+                color: white;
+                text-decoration: none;
+            }
+
+#listaEquipos {
+    margin-top: 20px;
+}
+
+    #listaEquipos p {
+        text-align: left;
+    }
+
+
+#miPerfil {
+    font-weight: bold;
+    font-size: xx-large;
+}
+
+#botonesPerfil {
+    display: flex;
+    justify-content: end;
+}
+
+#editarPerfil {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px;
+    background: #038C7F;
+    font-size: 25px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px #A9D9D0;
+    transition: 0.5s;
+    border: none;
+    color: white;
+    text-decoration: none;
+    padding-top: 7px;
+}
+
+#cruzVolver {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px;
+    background: #de5050;
+    font-size: 25px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px #A9D9D0;
+    transition: 0.5s;
+    border: none;
+    color: white;
+    text-decoration: none;
+    padding-top: 10px;
+    margin-left: 20px;
+}
+
+#editarPerfil:hover {
+    background: #023535;
+    transition: 0.5s;
+    box-shadow: 2px 2px 5px white;
+}
+
+#cruzVolver:hover {
+    background: #bb4545;
+    transition: 0.5s;
+    box-shadow: 2px 2px 5px white;
+}
+
+/*-----FIN TARJETA PERFIL--------*/
+/*----TARGETA LOGIN--------*/
+.containerLogin {
+    position: relative;
+    width: 800px;
+    height: 500px;
+    display: inline-flex;
+    margin-top: 190px;
+}
+
+.blackbox {
+    position: absolute;
+    width: 100%;
+    height: 85%;
+    margin-top: 5%;
+    border-radius: 20px;
+    background-color: #023535;
+}
+
+.frontbox {
+    position: absolute;
+    right: 0;
+    z-index: 1;
+    height: 100%;
+    width: 45%;
+    margin-right: 3%;
+    transition: right .8s ease-in-out;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 1px 1px 5px #023535;
+}
+
+.loginMsg {
+    width: 50%;
+    height: 100%;
+    font-size: 15px;
+    box-sizing: border-box;
+    padding-right: %;
+}
+
+    .loginMsg .title {
+        margin-top: 150px;
+        font-weight: 300;
+        font-size: 30px;
+    }
+
+    .loginMsg p {
+        margin-top: 70px;
+        font-weight: 100;
+        font-size: 18px;
+    }
+
+.textcontent {
+    color: white;
+    margin-top: 65px;
+    margin-left: 12%;
+}
+
+.loginMsg button {
+    background-color: #008F8C;
+    color: white;
+    width: 50%;
+    border: none;
+    border-radius: 5px;
+    font-size: 25px;
+    padding: 5px;
+    transition: 0.5s;
+}
+
+    .loginMsg button a {
+        text-decoration: none;
+        color: white;
+    }
+
+    .loginMsg button:hover {
+        background-color: #0CABA8;
+        color: #008F8C;
+        transition: 0.5s;
+    }
+
+.login {
+    padding: 10px;
+    text-align: center;
+}
+
+    .login h2 {
+        color: #015958;
+        font-size: 28px;
+    }
+
+.inputbox {
+    margin-top: 15px;
+}
+
+.formControl {
+    width: 80%;
+    margin: auto;
+    display: block;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.375rem;
+}
+
+#button-blue {
+    background-color: #008F8C;
+    color: white;
+    width: 50%;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 40px;
+    font-size: 20px;
+}
+
+#button-reset {
+    background-color: #CC6666;
+    color: white;
+    width: 50%;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 20px;
+}
+
+/*----FIN TARGETA LOGIN--------*/
+/*----TARGETA Registrar--------*/
+.containerRegistrar {
+    position: relative;
+    width: 1500px;
+    height: 680px;
+    display: inline-flex;
+    margin-top: 100px;
+}
+
+.pinkbox {
+    position: absolute;
+    width: 100%;
+    height: 80%;
+    margin-top: 5%;
+    border-radius: 20px;
+    background-color: #023535;
+}
+
+.registrarBotones {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+/*----TARGETA INICIO--------*/
+.textoInicio {
+    margin-top: 30px;
+    font-size: 20px;
+    color: #015958;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.content2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    margin-bottom: 20px;
+}
+
+
+/* === removing default button style ===*/
+.button {
+    margin: 0;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    border: none;
+}
+
+/* button styling */
+.button {
+    --border-right: 6px;
+    --text-stroke-color: rgba(255,255,255,0.6);
+    --animation-color: rgb(20, 36, 50);
+    --fs-size: 50px;
+    letter-spacing: 3px;
+    text-decoration: none;
+    font-size: var(--fs-size);
+    font-family: "Arial";
+    position: relative;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-stroke-color);
+}
+/* this is the text, when you hover on button */
+.hover-text {
+    position: absolute;
+    box-sizing: border-box;
+    content: attr(data-text);
+    color: var(--animation-color);
+    width: 0%;
+    inset: 0;
+    border-right: var(--border-right) solid var(--animation-color);
+    overflow: hidden;
+    transition: 0.5s;
+    -webkit-text-stroke: 1px var(--animation-color);
+}
+/* hover */
+.button:hover .hover-text {
+    width: 100%;
+    filter: drop-shadow(0 0 23px var(--animation-color))
+}
+
+/********* CAJA PROYECTOS PENDIENTES **********/
+
+.divListarProyectos {
+    background: white;
+    width: 60%;
+    height: 650px;
+    margin: auto;
+    padding: 20px 30px;
+    box-shadow: 5px 5px 10px gray;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+#listaPendientes {
+    background: #ebebeb;
+    width: 90%;
+    height: 81%;
+    margin: auto;
+    padding: 20px 25px 20px 30px;
+    border-radius: 10px 10px 0px 0px;
+    margin-top: 20px;
+    overflow-y: scroll;
+    /*border: 2px solid #023535;*/
+    box-shadow: 0px 0px 10px gray;
+}
+
+    #listaPendientes div {
+        background: white;
+        margin-bottom: 20px;
+        height: 100px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 5px gray;
+        display: flex;
+        align-items: center;
+        padding-left: 15px;
+        justify-content: space-between;
+    }
+
+        #listaPendientes div #nombreItem {
+            color: #015958;
+            font-weight: bold;
+            width: 450px;
+            text-align: left;
+        }
+
+        #listaPendientes div #entregarItem {
+            width: 150px;
+        }
+
+        #listaPendientes div #fechaItem {
+            display: flex;
+            align-items: center;
+            background: #015958;
+            height: 100%;
+            color: white;
+            width: 150px;
+            justify-content: space-evenly;
+            border-radius: 0px 10px 10px 0px;
+            font-weight: bold;
+        }
+
+#noTareas {
+    background: white;
+    width: 40%;
+    margin: auto;
+    padding: 10px;
+    box-shadow: 5px 5px 10px gray;
+    border-radius: 10px;
+    margin-top: 150px;
+    margin-bottom: 30px;
+}
+
+    #noTareas h2 {
+        background: #A9D9D0;
+        width: 100%;
+        color: #023535;
+        padding: 20px 0px;
+        border-radius: 10px;
+        margin-bottom: 0px;
+    }
+
+#botonListarProyectos {
+    width: 90%;
+    height: 40px;
+    background: #038C7F;
+    border: none;
+    border-radius: 0px 0px 10px 10px;
+    /*border-left: 2px solid #023535;
+    border-right: 2px solid #023535;
+    border-bottom: 2px solid #023535;*/
+    box-shadow: 0px 0px 10px gray;
+    transition: all 0.5s ease;
+}
+
+    #botonListarProyectos a {
+        color: white;
+        text-decoration: none;
+    }
+
+    #botonListarProyectos:hover {
+        background: #015958;
+    }
+
+#listaPendientes::-webkit-scrollbar {
+    width: 10px;
+}
+
+#listaPendientes::-webkit-scrollbar-track {
+    background: #ebebeb;
+    border-radius: 100px;
+}
+
+#listaPendientes::-webkit-scrollbar-thumb {
+    background-color: #cecece;
+    border-radius: 100px;
+}
+
+    #listaPendientes::-webkit-scrollbar-thumb:hover {
+        background-color: gray;
+        border-radius: 100px;
+    }
+
+span#iconoHome {
+    color: white;
+    float: left;
+    margin-top: 10px;
+}
+
+/***********************/
+#divAnadirEquipo {
+    padding-top: 5px;
+    padding-bottom: 15px;
+    background-color: white;
+    margin: auto;
+    margin-top: 40px;
+    width: 800px;
+    height: 810px;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 2px 2px 10px gray;
+    position: relative;
+}
+
+div#divAnadirEquipo #EquipoControlar {
+    width: 600px;
+    margin: auto;
+}
+
+div#divAnadirEquipo #EquipoControlar2 {
+    width: 600px;
+    margin: auto;
+}
+
+div#divAnadirEquipo #Departamento {
+    width: 600px;
+    margin: auto;
+    height: 38px;
+}
+
+div#divAnadirEquipo #Descripcion {
+    width: 600px;
+    height: 220px;
+    margin: auto;
+}
+
+#tituloInsertarEquipo {
+    margin-top: 40px;
+    margin-bottom: 30px;
+    color: #015958;
+}
+
+/********* FORMULARIO ALTA DE USUARIO *********/
+
+.containerRegistrar {
+    position: relative;
+    width: 1500px;
+    height: 700px;
+    display: inline-flex;
+    margin-top: 100px;
+}
+
+.pinkbox {
+    position: absolute;
+    width: 100%;
+    height: 80%;
+    margin-top: 5%;
+    border-radius: 20px;
+    background-color: #023535;
+}
+
+#button-blue2 {
+    margin: auto;
+    background-color: #008F8C;
+    color: white;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 20px;
+}
+
+    #button-blue2:hover {
+        background-color: #0CABA8;
+        transition: 0.5s;
+    }
+
+#button-blue3 {
+    margin: auto;
+    margin-top: 20px;
+    background-color: #008F8C;
+    color: white;
+    width: 50%;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 20px;
+}
+
+    #button-blue3:hover {
+        background-color: #0CABA8;
+        transition: 0.5s;
+    }
+
+.loginMsg img {
+    width: 35%;
+    margin: auto;
+    display: block;
+}
+
+.cajaTablas {
+    background: white;
+    width: 80%;
+    margin: auto;
+    padding: 20px 30px;
+    box-shadow: 5px 5px 10px gray;
+    border-radius: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.titulosTabla {
+    margin-top: 50px;
+}
+
+.headTabla {
+    background: #008F8C;
+    color: white;
+}
+
+    .headTabla a {
+        text-decoration: none;
+        color: white;
+    }
+
+        .headTabla a:hover {
+            text-decoration: none;
+            color: #A9D9D0;
+               
+        }
+
+.hoverTabla {
+    transition: 0.5s;
+}
+
+    .hoverTabla:hover {
+        background: #A9D9D0;
+        transition: 0.5s;
+    }
+
+.formGroup {
+    display: flex;
+    align-content: center;
+    justify-content: space-around;
+    flex-grow: 1;
+    width: 90%;
+    margin: auto;
+}
+
+.formGroup2 {
+    display: flex;
+    align-content: center;
+    justify-content: space-around;
+    flex-grow: 1;
+}
+
+fieldset#cajaPerfil {
+    border: 2px solid #A9D9D0;
+    width: 40%;
+    margin: auto;
+    margin-bottom: 30px;
+    border-radius: 10px;
+}
+
+fieldset div {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.submit {
+    flex-grow: 2;
+}
+
+#selectEquipos {
+    height: 70px;
+}
+
+#btnEnviar {
+    width: 35%;
+    background-color: #008F8C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 20px;
+    margin-top: 40px;
+}
+
+#btnDescargar {
+    width: 20%;
+    background-color: #008F8C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+ 
+
+#btnDescargar span {
+    vertical-align: middle;
+}
+
+/********** VISTA AÑADIR PROYECTO ***********/
+
+.tituloAltaProyecto {
+    margin-top: 30px;
+}
+
+.formularioProyecto {
+    position: relative;
+    background: white;
+    width: 80%;
+    height: 800px;
+    margin: auto;
+    padding: 45px 30px 30px 30px;
+    box-shadow: 5px 5px 10px gray;
+    border-radius: 10px;
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+    .formularioProyecto label {
+        float: left;
+        margin-left: 30px;
+    }
+
+.campoProyecto {
+    display: block;
+    width: 60%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.375rem;
+    float: right;
+}
+
+.datosGenerales {
+    position: absolute;
+    width: 44%;
+    border-radius: 10px;
+    background-color: #038C7F;
+    padding: 20px;
+    color: white;
+}
+
+.horas {
+    position: absolute;
+    width: 44%;
+    border-radius: 10px;
+    background-color: #023535;
+    padding: 20px;
+    color: white;
+    right: 40px;
+}
+
+.fechas {
+    position: absolute;
+    width: 44%;
+    border-radius: 10px;
+    background-color: #A9D9D0;
+    padding: 20px;
+    color: black;
+    right: 40px;
+    bottom: 60px;
+}
+
+#anadirProyecto {
+    position: absolute;
+    width: 45%;
+    bottom: 60px;
+}
+
+    #anadirProyecto input {
+        background: #023535;
+        transition: 0.5s;
+    }
+
+        #anadirProyecto input:hover {
+            background: #015958;
+            transition: 0.5s;
+        }
+
+#botonInicio {
+    width: 20%;
+    font-size: 25px;
+    color: #fff;
+    padding: 0.7em 1.7em;
+    border-radius: 15px;
+    background-color: #015958;
+    border: none;
+    transition: all .3s;
+    box-shadow: 6px 6px 10px #c1c1c1, -6px -6px 10px #FFF;
+    cursor: pointer;
+    margin-top: 100px;
+}
+
+    #botonInicio:hover {
+        background: #008F8C;
+        box-shadow: -6px -6px 10px #c1c1c1, 6px 6px 10px #FFF
+    }
+
+    #botonInicio a {
+        color: white;
+        text-decoration: none;
+    }
+
+.filaAnadir {
+    background: #A9D9D0;
+    font-size: 20px;
+    font-weight: bold;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+    .filaAnadir a {
+        color: black;
+        text-decoration: none;
+    }
+
+    .filaAnadir:hover {
+        background: #A4D1C9;
+        transition: 0.5s;
+    }
+
+    .filaAnadir a:hover {
+        color: black;
+        text-decoration: none;
+    }
+
+/*********** VISTA IMPLEMENTAR PROYECTO ************/
+
+.tituloArchivo {
+    margin-top: 100px;
+}
+
+.formularioArchivo {
+    background: white;
+    width: 40%;
+    height: 200px;
+    margin: auto;
+    padding: 30px;
+    box-shadow: 5px 5px 10px gray;
+    border-radius: 10px;
+    margin-top: 30px;
+    position: relative;
+}
+
+    .formularioArchivo label {
+        font-weight: bold;
+    }
+
+#anadirArchivo {
+    background-color: #008F8C;
+    color: white;
+    width: 40%;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 40px;
+    font-size: 20px;
+    margin-top: 30px;
+}
+
+.invoiceBox > input {
+    display: none;
+}
+
+.invoiceBox label {
+    display: block;
+}
+
+.boxFile {
+    display: inline-block;
+    width: 90%;
+    background: #A9D9D0;
+    color: #023535;
+    padding: 10px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 14px;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    box-shadow: 2px 2px 10px gray;
+    border-radius: 5px;
+}
+
+    .boxFile:hover {
+        cursor: pointer;
+        background: #008F8C;
+        color: #fff;
+        box-shadow: 2px 2px 10px #A9D9D0;
+    }
+
+    .boxFile i {
+        display: block;
+        font-size: 26px;
+        margin-bottom: 5px;
+    }
+
+.attached,
+.attached:hover,
+.attached:focus {
+    background: green;
+    color: #fff;
+    border: 1px solid green;
+}
+
+table td, th {
+    vertical-align: middle !important;
+}
+
+/****** MULTISELECT ******/
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400,500,700&subset=latin-ext');
+
+.multiSelect {
+    position: relative;
+}
+
+    .multiSelect *, .multiSelect *::before, .multiSelect *::after {
+        box-sizing: border-box;
+    }
+
+.multiSelect_dropdown {
+    font-size: 14px;
+    min-height: 35px;
+    line-height: 35px;
+    border-radius: 4px;
+    box-shadow: none;
+    outline: none;
+    background-color: #fff;
+    color: #444f5b;
+    border: 1px solid #d9dbde;
+    font-weight: 400;
+    padding: 0.5px 13px;
+    margin: 0;
+    transition: .1s border-color ease-in-out;
+    cursor: pointer;
+}
+
+    .multiSelect_dropdown.-hasValue {
+        padding: 5px 30px 5px 5px;
+        cursor: default;
+    }
+
+    .multiSelect_dropdown.-open {
+        box-shadow: none;
+        outline: none;
+        padding: 4.5px 29.5px 4.5px 4.5px;
+        border: 1.5px solid #038C7F;
+    }
+
+.multiSelect_arrow::before,
+.multiSelect_arrow::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 2px;
+    height: 8px;
+    border-radius: 20px;
+    border-bottom: 8px solid #99A3BA;
+    top: 40%;
+    transition: all .15s ease;
+}
+
+.multiSelect_arrow::before {
+    right: 18px;
+    -webkit-transform: rotate(-50deg);
+    transform: rotate(-50deg);
+}
+
+.multiSelect_arrow::after {
+    right: 13px;
+    -webkit-transform: rotate(50deg);
+    transform: rotate(50deg);
+}
+
+.multiSelect_list {
+    margin: 0;
+    margin-bottom: 25px;
+    padding: 0;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    max-height: calc(10 * 31px);
+    top: 28px;
+    left: 0;
+    z-index: 9999;
+    right: 0;
+    background: #fff;
+    border-radius: 4px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    transition: opacity 0.1s ease, visibility 0.1s ease, -webkit-transform 0.15s cubic-bezier(0.4, 0.6, 0.5, 1.32);
+    transition: opacity 0.1s ease, visibility 0.1s ease, transform 0.15s cubic-bezier(0.4, 0.6, 0.5, 1.32);
+    transition: opacity 0.1s ease, visibility 0.1s ease, transform 0.15s cubic-bezier(0.4, 0.6, 0.5, 1.32), -webkit-transform 0.15s cubic-bezier(0.4, 0.6, 0.5, 1.32);
+    -webkit-transform: scale(0.8) translate(0, 4px);
+    transform: scale(0.8) translate(0, 4px);
+    border: 1px solid #d9dbde;
+    box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
+}
+
+.multiSelect_option {
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    -webkit-transform: translate(6px, 0);
+    transform: translate(6px, 0);
+    transition: all .15s ease;
+}
+
+    .multiSelect_option.-selected {
+        display: none;
+    }
+
+    .multiSelect_option:hover .multiSelect_text {
+        color: #fff;
+        background: #A9D9D0;
+    }
+
+.multiSelect_text {
+    cursor: pointer;
+    display: block;
+    padding: 5px 13px;
+    color: #023535;
+    font-size: 14px;
+    text-decoration: none;
+    outline: none;
+    position: relative;
+    transition: all .15s ease;
+}
+
+.multiSelect_list.-open {
+    opacity: 1;
+    visibility: visible;
+    -webkit-transform: scale(1) translate(0, 12px);
+    transform: scale(1) translate(0, 12px);
+    transition: opacity 0.15s ease, visibility 0.15s ease, -webkit-transform 0.15s cubic-bezier(0.4, 0.6, 0.5, 1.32);
+    transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s cubic-bezier(0.4, 0.6, 0.5, 1.32);
+    transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s cubic-bezier(0.4, 0.6, 0.5, 1.32), -webkit-transform 0.15s cubic-bezier(0.4, 0.6, 0.5, 1.32);
+}
+
+    .multiSelect_list.-open + .multiSelect_arrow::before {
+        -webkit-transform: rotate(-130deg);
+        transform: rotate(-130deg);
+    }
+
+    .multiSelect_list.-open + .multiSelect_arrow::after {
+        -webkit-transform: rotate(130deg);
+        transform: rotate(130deg);
+    }
+
+    .multiSelect_list.-open .multiSelect_option {
+        opacity: 1;
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+    }
+
+        .multiSelect_list.-open .multiSelect_option:nth-child(1) {
+            transition-delay: 10ms;
+        }
+
+        .multiSelect_list.-open .multiSelect_option:nth-child(2) {
+            transition-delay: 20ms;
+        }
+
+        .multiSelect_list.-open .multiSelect_option:nth-child(3) {
+            transition-delay: 30ms;
+        }
+
+        .multiSelect_list.-open .multiSelect_option:nth-child(4) {
+            transition-delay: 40ms;
+        }
+
+        .multiSelect_list.-open .multiSelect_option:nth-child(5) {
+            transition-delay: 50ms;
+        }
+
+        .multiSelect_list.-open .multiSelect_option:nth-child(6) {
+            transition-delay: 60ms;
+        }
+
+        .multiSelect_list.-open .multiSelect_option:nth-child(7) {
+            transition-delay: 70ms;
+        }
+
+        .multiSelect_list.-open .multiSelect_option:nth-child(8) {
+            transition-delay: 80ms;
+        }
+
+        .multiSelect_list.-open .multiSelect_option:nth-child(9) {
+            transition-delay: 90ms;
+        }
+
+        .multiSelect_list.-open .multiSelect_option:nth-child(10) {
+            transition-delay: 100ms;
+        }
+
+.multiSelect_choice {
+    background: #A9D9D0;
+    color: #444f5b;
+    padding: 4px 8px;
+    line-height: 17px;
+    margin: 5px;
+    display: inline-block;
+    font-size: 13px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.multiSelect_deselect {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    stroke: #015958;
+    stroke-width: 4px;
+    margin-top: -1px;
+    margin-left: 2px;
+    vertical-align: middle;
+}
+
+.multiSelect_choice:hover .multiSelect_deselect {
+    stroke: #015958;
+}
+
+.multiSelect_noselections {
+    text-align: center;
+    padding: 7px;
+    color: #015958;
+    font-weight: 450;
+    margin: 0;
+}
+
+.multiSelect_placeholder {
+    position: absolute;
+    left: 20px;
+    font-size: 14px;
+    top: 8px;
+    padding: 0 4px;
+    background-color: #fff;
+    color: #b8bcbf;
+    pointer-events: none;
+    transition: all .1s ease;
+}
+
+.multiSelect_dropdown.-open + .multiSelect_placeholder,
+.multiSelect_dropdown.-open.-hasValue + .multiSelect_placeholder {
+    top: -11px;
+    left: 17px;
+    color: #023535;
+    font-size: 13px;
+}
+
+.multiSelect_dropdown.-hasValue + .multiSelect_placeholder {
+    top: -11px;
+    left: 17px;
+    color: #6e7277;
+    font-size: 13px;
+}
+
+/************* PAGINACIÓN VISTA PROYECTOS *************/
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.filtros {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-around;
+    align-items: center;
+}
+
+    .filtros label {
+        width: 250px;
+        margin-left: 20px;
+        margin-bottom: 0px;
+    }
+
+    .filtros form {
+        display: flex;
+    }
+
+.pagination-container .pagination {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+    .pagination-container .pagination li {
+        margin: 0 5px;
+        background: #A9D9D0;
+        padding: 5px;
+        transition: 0.5s;
+        border-radius: 10px;
+    }
+        /* ESTILO DE << << || >> >> */
+        .pagination-container .pagination li.PagedList-skipToLast {
+            background: #015958;
+        }
+
+        .pagination-container .pagination li.PagedList-skipToFirst {
+            background: #015958;
+        }
+
+        .pagination-container .pagination li.PagedList-skipToLast a {
+            color: white;
+        }
+
+        .pagination-container .pagination li.PagedList-skipToFirst a {
+            color: white;
+        }
+        /* ESTILO DE << || >> */
+        .pagination-container .pagination li.PagedList-skipToNext {
+            background: #008F8C;
+        }
+
+        .pagination-container .pagination li.PagedList-skipToPrevious {
+            background: #008F8C;
+        }
+        /* ESTILO DE CUANDO ESTÁ ACTIVE */
+        .pagination-container .pagination li.active {
+            background: #023535;
+        }
+
+            .pagination-container .pagination li.active a {
+                color: white;
+            }
+
+        .pagination-container .pagination li a,
+        .pagination-container .pagination li span {
+            display: block;
+            padding: 5px 10px;
+            color: #023535;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+/****** CAJA CONTENEDORA DE LOS FILTROS *******/
+.cajaTablaProyectos {
+    background: white;
+    width: 90%;
+    margin: auto;
+    padding: 20px 30px;
+    box-shadow: 5px 5px 10px gray;
+    border-radius: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.cajaFiltros {
+    background: white;
+    width: 90%;
+    margin: auto;
+    padding: 10px 20px;
+    box-shadow: 2px 2px 5px gray;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.btnImplementar {
+    width: 25%;
+    background: #008F8C;
+    font-size: 20px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px gray;
+    margin-top: 20px;
+    color: white;
+    transition: 0.5s;
+    border: none;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+    .btnImplementar:hover {
+        background: #015958;
+        transition: 0.5s;
+        box-shadow: 2px 2px 10px white;
+    }
+
+    .btnImplementar span {
+        vertical-align: middle;
+    }
+
+.table {
+    margin-bottom: 0px;
+}
+/*********** TARJETA INFO PROYECTO ***********/
+
+td.sinFecha {
+    font-weight: bold;
+    color: #023535;
+}
+
+.cajaVerProyecto {
+    background: white;
+    width: 70%;
+    margin: auto;
+    padding: 20px 30px;
+    box-shadow: 5px 5px 10px gray;
+    border-radius: 10px;
+    margin-top: 100px;
+    margin-bottom: 30px;
+    height: 770px;
+}
+
+.tituloVerProyecto {
+    margin-bottom: 20px;
+}
+
+.cajaVerProyecto span {
+    font-weight: bold;
+}
+
+.cajaVerProyecto #verFechas {
+    background: #008F8C;
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+}
+
+#verFechas span {
+    color: white;
+    font-size: 20px;
+    margin: auto;
+}
+
+.cajaVerProyecto #verHoras {
+    background: #015958;
+    color: white;
+    float: right;
+    padding: 20px;
+    border-radius: 10px;
+    width: 33%;
+    font-size: x-large;
+    height: 420px;
+}
+
+    .cajaVerProyecto #verHoras #cajaHoras {
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid white;
+        font-size: 20px;
+    }
+
+        .cajaVerProyecto #verHoras #cajaHoras p {
+            margin-bottom: 0px;
+        }
+
+    .cajaVerProyecto #verHoras #cajaDesviacion {
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid white;
+        margin-top: 11px;
+        font-size: 20px;
+    }
+
+        .cajaVerProyecto #verHoras #cajaDesviacion #flexDesviacion {
+            display: flex;
+            justify-content: space-around;
+        }
+
+            .cajaVerProyecto #verHoras #cajaDesviacion #flexDesviacion div {
+                width: 100%;
+            }
+
+        .cajaVerProyecto #verHoras #cajaDesviacion p {
+            margin-bottom: 0px;
+        }
+
+span#nombreDesviacion {
+    display: block;
+    width: 100%;
+    margin: auto;
+    background: #008F8C;
+    border-radius: 5px;
+}
+
+
+.cajaVerProyecto #verDatos {
+    background: #A9D9D0;
+    float: left;
+    padding: 20px;
+    border-radius: 10px;
+    width: 65%;
+    margin-bottom: 20px;
+    font-size: 23px;
+    height: 420px;
+}
+
+.cajaVerProyecto #cajaOpciones {
+    margin-top: 20px;
+}
+
+    .cajaVerProyecto #cajaOpciones .botonVolver {
+        float: left;
+        padding: 10px;
+        background: #023535;
+        font-size: 20px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 5px gray;
+        transition: 0.5s;
+        border: none;
+        color: white;
+        text-decoration: none;
+    }
+
+        .cajaVerProyecto #cajaOpciones .botonVolver:hover {
+            background: #015958;
+            transition: 0.5s;
+        }
+
+    .cajaVerProyecto #cajaOpciones .botonBorrar {
+        float: right;
+        padding: 10px;
+        background: #E33239;
+        font-size: 20px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 5px gray;
+        transition: 0.5s;
+        border: none;
+        color: white;
+        text-decoration: none;
+        margin-right: 20px;
+    }
+
+        .cajaVerProyecto #cajaOpciones .botonBorrar:hover {
+            background: #C7262C;
+            transition: 0.5s;
+        }
+
+    .cajaVerProyecto #cajaOpciones .botonEditar {
+        float: right;
+        padding: 10px;
+        background: #4BB5E4;
+        font-size: 20px;
+        border-radius: 10px;
+        box-shadow: 2px 2px 5px gray;
+        transition: 0.5s;
+        border: none;
+        color: white;
+        text-decoration: none;
+    }
+
+        .cajaVerProyecto #cajaOpciones .botonEditar:hover {
+            background: #48A0C7;
+            transition: 0.5s;
+        }
+
+#tablaDatos {
+    width: 90%;
+    margin: auto;
+    text-align: left;
+}
+
+    #tablaDatos tr {
+        border-bottom: 1px solid black;
+    }
+
+.blanco {
+    background: white;
+    color: #023535;
+    width: 90%;
+    margin: auto;
+}
+
+/******* CALENDARIOS DE LAS FECHAS *******/
+.calendar {
+    position: relative;
+    background: #ffffff;
+    border-radius: 8px;
+    width: 150px;
+    height: 150px;
+    margin-left: 10px;
+    text-align: center;
+    overflow: hidden;
+    -webkit-box-reflect: below 1px linear-gradient (transparent, transparent, #0004);
+}
+
+    .calendar #monthName {
+        position: relative;
+        background: #023535;
+        color: #ffffff;
+        font-size: 24px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .calendar #dayName {
+        font-size: 20px;
+        font-weight: 300;
+        margin-top: 20px;
+        color: #999;
+    }
+
+    .calendar #dayNumber {
+        font-size: 80px;
+        font-weight: 700;
+        margin-top: 0px;
+        color: #333;
+        line-height: 1em;
+    }
+
+    .calendar #year {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #999;
+    }
+
+#amarillo {
+    background-color: #ffca18;
+    width: 90%;
+    margin: auto;
+}
+
+#verde {
+    background-color: #43df6f;
+    width: 90%;
+    margin: auto;
+}
+
+#rojo {
+    background-color: #e85459;
+    width: 90%;
+    margin: auto;
+}
+
+#amarilloLista {
+    background-color: #ffca18;
+}
+
+#verdeLista {
+    background-color: #43df6f;
+}
+
+#rojoLista {
+    background-color: #e85459;
+}
+
+/******** BUSCADOR DE PROYECTOS *******/
+#buscar {
+    width: 300px;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    border: 0;
+    outline: none;
+    border: 1px solid #ced4da;
+}
+
+#botonBuscar {
+    border-radius: 0px 4px 4px 0px;
+    border: 0;
+    padding: 0.375rem 0.75rem;
+    cursor: pointer;
+    border-radius: 0.375rem;
+    margin-left: 10px;
+}
+
+    #botonBuscar:hover {
+        background: #A9D9D0;
+    }
+
+
+/******* SELECT LISTAR EQUIPOS ********/
+
+.content-input input,
+.content-select select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.content-select select {
+    display: inline-block;
+    width: 100%;
+    cursor: pointer;
+    padding: 7px 10px;
+    height: 42px;
+    outline: 0;
+    border-radius: 10px;
+    background: #fff;
+    color: #023535;
+    border: 1px solid #023535;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+
+    .content-select select:hover {
+        background: #A9D9D0;
+    }
+
+    .content-select select:focus {
+        outline: none;
+        background: #A9D9D0;
+        color: #023535;
+    }
+
+    .content-select select:focus {
+        outline: none;
+        background: #fff;
+        color: #023535;
+    }
+
+
+/***** TEXTO CUANDO NO HAY DATOS *****/
+
+.noDatos {
+    background: #d57b7b9c;
+    color: #5c0b0b;
+    border: 1px solid #5c0b0b;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px gray;
+    width: 35%;
+    padding: 15px;
+    margin: auto;
+    margin-top: 100px;
+}
+
+    .noDatos span {
+        display: block;
+        width: 30%;
+        margin: auto;
+        margin-top: 20px;
+        background: white;
+        border: 1px solid #5c0b0b;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px gray;
+        transition: all 0.5s ease;
+    }
+
+        .noDatos span:hover {
+            background: #5c0b0b;
+        }
+
+        .noDatos span a {
+            color: #5c0b0b;
+            text-decoration: none;
+            transition: all 0.5s ease;
+        }
+
+            .noDatos span a:hover {
+                color: #fff;
+            }
+
+
+/****** VISTA ESTADISTICAS ******/
+
+.botonFlitrar {
+    width: 100px;
+    background: #008F8C;
+    padding: 5px;
+    font-size: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px gray;
+    transition: 0.5s;
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+
+.titulosEstadistiacas {
+    margin: auto;
+    width: 90.2%;
+    margin-bottom: 0px;
+    background: #008F8C;
+    box-shadow: 2px 2px 5px gray;
+    border-radius: 10px 10px 0px 0px;
+    color: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.cajaGraficos {
+    background: white;
+    width: 90%;
+    margin: auto;
+    padding: 10px 20px;
+    box-shadow: 2px 2px 5px gray;
+    border-radius: 0px 0px 10px 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+#mensaje {
+    background: #a9d9d08c;
+    border: 1px solid #015958;
+    border-radius: 10px;
+    width: 30%;
+    margin: auto;
+    margin-top: 15%;
+    padding: 10px;
+    box-shadow: 2px 2px 10px gray;
+    font-size: 18px;
+}
+
+.mensaje {
+    background: #a9d9d08c;
+    border: 1px solid #015958;
+    border-radius: 10px;
+    width: 30%;
+    margin: auto;
+    margin-top: 15%;
+    padding: 10px;
+    box-shadow: 2px 2px 10px gray;
+    font-size: 18px;
+}
+
+span#errorp.text-danger {
+    font-size: 20px;
+}
+
+#parrafoHoras {
+    background: #a9d9d08c;
+    border-radius: 10px;
+    width: 30%;
+    margin: auto;
+    margin-top: 20px;
+    padding: 20px 10px;
+    box-shadow: 2px 2px 5px gray;
+    font-size: 18px;
+}
+
+    #parrafoHoras span {
+        background: #fff;
+        border: 1px solid #023535;
+        border-radius: 100px;
+        width: 30%;
+        padding: 5px 20px;
+        font-size: 18px;
+        margin-left: 20px;
+        font-weight: bold;
+        color: #015958;
+    }
+
+.spans {
+    cursor: pointer;
+    display: block;
+    padding: 20px 30px;
+    text-decoration: none;
+    color: aliceblue;
+    transition: 1s;
+}
+
+    .spans:hover {
+        background: #A9D9D0;
+        color: #666;
+        text-shadow: none;
+    }
+
+.noUsu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 700px;
+    margin: auto;
+    width: 550px;
+    height: 40px;
+    color: #5c0b0b;
+    padding-top: 6px;
+    background: #a9d9d08c;
+    border: 1px solid #015958;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px gray;
+    font-size: 18px;
+}
+
+
+/******* ICONOS DE GOOGLE ********/
+.material-symbols-outlined {
+    font-size: 29px !important;
+}
+
+.verTamanio {
+    font-size: 24px !important;
+}
+
+.bntVerProyecto {
+    background: #cdcdcd;
+    color: #000;
+    padding-top: 6px;
+    border-radius: 10px;
+    transition: all 0.5s ease;
+}
+
+    .bntVerProyecto:hover {
+        background: #b1b1b1;
+        color: #000;
+    }
+
+.cruz {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: #de5050;
+    height: 30px;
+    color: white;
+    border-radius: 100px;
+    transition: all 0.5s ease;
+}
+
+    .cruz:hover {
+        background: #bb4545;
+        color: white;
+    }
+
+#leyenda ul {
+    margin-bottom: 20px;
+    display: flex;
+    padding-left: 0px;
+    border-radius: 10px;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.cuadrado {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    border-radius: 100px;
+}
+
+.rojo {
+    background-color: #E53935;
+}
+
+.morado {
+    background-color: #5E35B1;
+}
+
+.azul {
+    background-color: #039BE5;
+}
+
+.verde {
+    background-color: #7CB342;
+}
+
+.amarillo {
+    background-color: #FFB300;
+}
+
+.rosa {
+    background-color: #FB00FF;
+}
+
+.fc .fc-button-primary {
+    background-color: #008f8c;
+    border: none;
+    transition: all 0.5s ease;
+}
+
+    .fc .fc-button-primary:hover {
+        background-color: #015958;
+        border: none;
+    }
+
+    .fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active {
+        background-color: #023535;
+        border: none;
+    }
+
+    .fc .fc-button-primary:disabled {
+        background: #008F8C;
+    }
+
+.fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 1.5em;
+    background: #A9D9D0;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px gray;
+}
+
+#calendario table {
+    border-collapse: collapse;
+    padding: 10px;
+}
+
+    #calendario table th {
+        border: 1px solid #008F8C;
+        border-bottom-width: 0px;
+        background: #008F8C;
+        color: white;
+           
+    }
+
+    #calendario table tr {
+        height: 10px;
+    }
+
+.cajaTablaCalendario {
+    background: white;
+    width: 70%;
+    margin: auto;
+    padding: 20px 30px;
+    box-shadow: 5px 5px 10px gray;
+    border-radius: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+/*.fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start {
+    margin-right: 5px;
+    margin-left: 5px;
+    padding: 5px 10px;
+    font-size: 16px;
+}*/
+
+.form-group {
+    margin-bottom: 0.3rem !important;
+}
+
+.colorGris {
+    color: #898989;
+    font-weight: 400;
+}
+
+#botonCerrarSesion {
+    padding: 0px;
+}
+
+.push-right {
+    margin-left: auto;
+    /*border-left: 1px solid black;*/
+}
+
+#mi-sub {
+    width: 15%;
+    right: 0px;
+}
+
+#homeIcon {
+    display: flex;
+    align-items: center;
+}
+
+    #homeIcon span {
+        margin-right: 10px;
+        font-size: 30px !important;
+    }
+
+nav#cabeceraOpciones {
+    z-index: 100;
+    position: absolute;
+    width: 100%;
+    height: 40px;
+    background-color: #035555;
+    color: white;
+    padding-left: 40px;
+    box-shadow: 0px 10px 5px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+    user-select: none;
+}
+
+    nav#cabeceraOpciones div {
+        float: left;
+    }
+
+div.flexMenu {
+    display: flex;
+    width: 150px;
+    justify-content: center;
+    align-items: center;
+    margin-right: 55px;
+    height: 100%;
+    transition: all 0.5s ease;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    div.flexMenu:hover {
+        background-color: #A9D9D0;
+        color: black;
+    }
+
+span.flechas {
+    width: 16px;
+    height: 16px;
+    padding-bottom: 27px;
+}
+
+span#cabeceraMenu {
+    color: white;
+    font-size: 20px;
+    margin: auto;
+    margin-left: 580px;
+    font-family: "Raleway","Helvetica Neue",Arial,Helvetica,sans-serif;
+}
+
+ul#ulPrincipal {
+    padding: 0;
+}
+
+div.hoverMenu {
+    display: block;
+    padding-top: 7px;
+    width: 170px;
+}
+
+div.divsSubOpciones {
+    display: block !important;
+    margin-top: 10px;
+    background-color: #027373;
+    border-radius: 5px;
+}
+
+div#opcionMisTrabajos {
+    height: 240px;
+    width: 220px;
+}
+
+    div#opcionMisTrabajos > div {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        width: 100%;
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        margin-left: 27px;
+    }
+
+span.titulosApartados {
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+    span.titulosApartados > a {
+        text-decoration: none;
+        color: white;
+        transition: all 0.5s ease;
+    }
+
+        span.titulosApartados > a:hover {
+            color: #A9D9D0;
+        }
+
+div#opcionMisEquipos {
+    height: auto;
+    width: 220px;
+    box-shadow: 2px 2px 5px gray;
+}
+
+    div#opcionMisEquipos > div {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        width: 100%;
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        margin-left: 27px;
+    }
+
+
+
+div#opcionMisUsuarios {
+    width: 220px;
+    height: auto;
+    box-shadow: 2px 2px 5px gray;
+}
+
+    div#opcionMisUsuarios > div {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        width: 100%;
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        margin-left: 27px;
+    }
+
+div#opcionMisProyectos {
+    height: auto;
+    width: 240px;
+    box-shadow: 2px 2px 5px gray;
+}
+
+    div#opcionMisProyectos > div {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        width: 100%;
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        margin-left: 27px;
+    }
+
+
+div#opcionMisEstadisticas {
+    height: auto;
+    width: 260px;
+    box-shadow: 2px 2px 5px gray;
+}
+
+    div#opcionMisEstadisticas > div {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        width: 100%;
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        margin-left: 27px;
+    }
+
+/********** MENU NOTIFICACIONES ***********/
+
+div#divOpcionTrabajo, #divOpcionEquipo, #divOpcionUsuario, #divOpcionProyecto, #divOpcionEstadistica, #divNotificaciones {
+    display: none;
+}
+
+div#divNotificaciones {
+    background-color: #f5f5f5;
+    position: absolute;
+    right: 20px;
+    top: 70px;
+    width: 600px;
+    height: 700px;
+    z-index: 200;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px gray;
+}
+
+    div#divNotificaciones #cabeceraNotificaciones {
+        display: flex;
+        align-items: center;
+        background: white;
+        color: #023535;
+        text-shadow: 1px 1px 2px gray;
+        height: 100px;
+        border-bottom: 1px solid #015958;
+    }
+
+h2#tituloNotificaciones {
+    width: 250px;
+    margin-top: 20px;
+    margin-left: 20px;
+    border-bottom: 4px solid #313131;
+    padding-bottom: 10px;
+}
+
+div#tituloNoti {
+    font-size: 22px;
+}
+
+div#contenedorEntregas {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 86%;
+    overflow-y: scroll;
+    position: relative;
+}
+
+div.filasNotificaciones {
+    width: 100%;
+    height: 130px;
+    background-color: #A9D9D0;
+    padding-left: 10px;
+    padding-top: 1px;
+}
+
+    div.filasNotificaciones:nth-child(even) {
+        background-color: #82c1ba;
+    }
+
+div.nProyecto {
+    font-weight: bold;
+    text-align: left;
+    font-size: 18px;
+    margin-left: 20px;
+    margin-top: 8px;
+}
+
+
+div.nJefeP {
+    text-align: left;
+    margin-left: 20px;
+    color: #645c5c;
+    font-weight: 400;
+    font-size: 17px;
+}
+
+div.nFechaEntrega {
+    margin-top: 10px;
+    margin-left: 20px;
+    background-color: #008f8c;
+    width: 250px;
+    text-align: center;
+    padding: 7px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 2px 2px 10px #0000003d;
+    margin-bottom: 15px;
+}
+
+
+div#numeroNotificaciones {
+    position: absolute;
+    top: 10px;
+    right: 200px;
+    background-color: red;
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    border-radius: 50px;
+    text-align: center;
+    user-select: none;
+}
+
+div#sinNotificaciones {
+    margin-top: 175px;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+div#divNotiHoy {
+    width: 500px;
+    height: 160px;
+    margin: auto;
+    text-align: center;
+    background-color: #82c1ba;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 60px;
+    margin-bottom: 20px;
+    box-shadow: 2px 2px 10px #0000003d;
+}
+
+    div#divNotiHoy span {
+        font-size: 20px;
+        text-shadow: 2px 2px 10px white;
+    }
+
+img#imagenNotificaciones {
+    width: 60px;
+    height: auto;
+    transition: all 0.5s ease;
+}
+
+    img#imagenNotificaciones:hover {
+        transform: rotate(360deg);
+    }
+
+.ocultar {
+    display: none;
+}
+
+div.filasNotificaciones a {
+    text-decoration: none;
+    float: right;
+    background: white;
+    font-weight: bold;
+    margin-top: 45px;
+    margin-right: 40px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px #808080c4;
+    color: #023535;
+    transition: all 0.5s ease;
+}
+
+    div.filasNotificaciones a:hover {
+        margin-top: 40px;
+        box-shadow: 0px 5px 10px #80808087;
+        color: #008F8C;
+    }
+
+
+#contenedorEntregas::-webkit-scrollbar {
+    width: 10px;
+}
+
+#contenedorEntregas::-webkit-scrollbar-track {
+    background: #ebebeb;
+    border-radius: 100px;
+}
+
+#contenedorEntregas::-webkit-scrollbar-thumb {
+    background-color: #cecece;
+    border-radius: 100px;
+}
+
+    #contenedorEntregas::-webkit-scrollbar-thumb:hover {
+        background-color: gray;
+        border-radius: 100px;
+    }
+
+#contenedorTareas {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 86%;
+    overflow-y: scroll;
+    position: relative;
+}
+
+    #contenedorTareas::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    #contenedorTareas::-webkit-scrollbar-track {
+        background: #ebebeb;
+        border-radius: 100px;
+    }
+
+    #contenedorTareas::-webkit-scrollbar-thumb {
+        background-color: #cecece;
+        border-radius: 100px;
+    }
+
+        #contenedorTareas::-webkit-scrollbar-thumb:hover {
+            background-color: gray;
+            border-radius: 100px;
+        }
+
+#botonesImportar {
+    display: flex;
+    justify-content: center;
+}
+
+.enl span {
+    text-decoration: none;
+    vertical-align: middle;
+    font-size: 30px
+}
+
+.Descargar span {
+    color: #027373;
+}
+
+.Eliminar span {
+    color: red;
+}
+
+div#mensajeSaludo {
+    margin-right: 20px;
+    margin-top: 7px;
+    float: right !important;
+}
+
+/******* VISTA TABLERO *******/
+
+#errCsv {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    top: 475px;
+    margin: auto;
+    width: 550px;
+    height: 40px;
+    color: #5c0b0b;
+    padding-top: 6px;
+    background: #a9d9d08c;
+    border: 1px solid #015958;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px gray;
+    font-size: 18px;
+}
+
+.tareasDiv {
+    display: flex;
+    justify-content: center;
+}
+
+.tareaEstado {
+    min-height: 700px;
+    width: 400px;
+    background: #a9d9d0;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px -1px gray;
+    padding: 10px;
+}
+
+.tareaTablero {
+    display: flex;
+    background: white;
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 6px;
+    box-shadow: 0px 2px 5px -1px gray;
+    align-items: center;
+    cursor: move;
+}
+
+    .tareaTablero:last-child {
+        margin-bottom: 40px;
+    }
+
+.datosTablero {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    text-align: initial;
+    padding-left: 15px;
+}
+
+.fechaTarea {
+    background: #008F8C;
+    color: white;
+    padding: 2px 5px 2px 5px;
+    border-radius: 5px;
+    width: 40%;
+    display: flex;
+    justify-content: space-around;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+#modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 150px;
+}
+
+#modal-content {
+    background-color: #fefefe;
+    border: 1px solid #888;
+    padding-bottom: 50px !important;
+    margin: auto;
+    margin-top: 40px;
+    width: 800px;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 2px 2px 10px gray;
+    position: relative;
+}
+
+    #modal-content input {
+        width: 600px;
+        margin: auto;
+    }
+
+        #modal-content input#modificarTarea {
+            width: 200px;
+            margin: auto;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        #modal-content input#borrarTarea {
+            width: 200px;
+            margin: auto;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+    #modal-content select {
+        width: 600px;
+        margin: auto;
+    }
+
+.verTablero {
+    font-size: 24px !important;
+    vertical-align: middle;
+}
+
+.tituloTablero {
+    margin-bottom: 10px;
+    background: #008F8C;
+    color: white;
+    padding: 5px 0px 5px 0px;
+    border-radius: 5px 5px 0px 0px;
+    border-bottom: 2px solid white;
+}
+
+.iconoEstado {
+    border-radius: 100px;
+    padding: 3px;
+    color: white;
+}
+
+    .iconoEstado#noComenzado {
+        background: #027373;
+    }
+
+    .iconoEstado#enProceso {
+        background: #009fe6;
+    }
+
+    .iconoEstado#block {
+        background: #d82727;
+    }
+
+    .iconoEstado#done {
+        background: #00cc04;
+    }
+
+#borrarTarea {
+    background: #c12727;
+    border: none;
+    font-size: 20px;
+    box-shadow: 2px 2px 5px -1px gray;
+    transition: all 0.5s ease;
+}
+
+#modificarTarea {
+    background: #008F8C;
+    border: none;
+    font-size: 20px;
+    box-shadow: 2px 2px 5px -1px gray;
+    transition: all 0.5s ease;
+}
+
+#borrarTarea:hover {
+    background: #a01919;
+    box-shadow: none;
+}
+
+#modificarTarea:hover {
+    background: #047d7a;
+    box-shadow: none;
+}
+
+/******** FORMULARIO AÑADIR TAREA ********/
+.form-popup-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+}
+
+.form-popup-bg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(94, 110, 141, 0.9);
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: opacity 0.3s 0s, visibility 0s 0.3s;
+    -moz-transition: opacity 0.3s 0s, visibility 0s 0.3s;
+    transition: opacity 0.3s 0s, visibility 0s 0.3s;
+    overflow-y: auto;
+    z-index: 10000;
+}
+
+    .form-popup-bg.is-visible {
+        opacity: 1;
+        visibility: visible;
+        -webkit-transition: opacity 0.3s 0s, visibility 0s 0s;
+        -moz-transition: opacity 0.3s 0s, visibility 0s 0s;
+        transition: opacity 0.3s 0s, visibility 0s 0s;
+    }
+
+.form-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    padding: 40px;
+    color: black;
+    height: 900px;
+    justify-content: space-around;
+}
+
+.divFormTareas {
+    margin-bottom: 1.8rem;
+    text-align: initial;
+}
+
+.close-button {
+    margin: 10px;
+    background: none;
+    color: black;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: solid 1px black;
+    border-radius: 10px;
+    transition: all 0.5s ease;
+}
+
+    .close-button:hover {
+        background: red;
+        color: white;
+        border: none;
+        border-radius: 100px;
+    }
+
+.form-popup-bg:before {
+    content: '';
+    background-color: #fff;
+    opacity: .25;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#botonAnadirtarea {
+    margin-top: 30px;
+    width: 60%;
+    height: 40px;
+    background: #038C7F;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px gray;
+    transition: all 0.5s ease;
+    color: white;
+}
+
+    #botonAnadirtarea:hover {
+        background: #015958;
+    }
+
+div#cambioOpcion {
+    height: 50px;
+    text-align: left;
+    padding-left: 20px;
+    padding-top: 15px;
+    font-size: 15px;
+    background: #008F8C;
+    color: white;
+}
+
+    div#cambioOpcion > span {
+        cursor: pointer;
+        margin-left: 20px;
+        margin-right: 20px;
+        font-weight: 500;
+    }
+
+        div#cambioOpcion > span:hover {
+            border-bottom: 2px solid white;
+        }
+
+
+div#numeroProyectos {
+    display: none;
+    position: absolute;
+    top: 175px;
+    right: 500px;
+    background-color: #023535;
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    border-radius: 50px;
+    text-align: center;
+    user-select: none;
+    z-index: 300;
+}
+
+div#numeroTareas {
+    display: none;
+    position: absolute;
+    top: 175px;
+    right: 415px;
+    background-color: #023535;
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    border-radius: 50px;
+    text-align: center;
+    user-select: none;
+    z-index: 300;
+}
+
+#volverListado {
+    color: white;
+    text-decoration: none;
+    background: #008F8C;
+    padding: 5px 10px;
+    font-size: 19px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px -1px gray;
+    font-weight: 500;
+    transition: all 0.5s ease;
+    margin-left: 950px;
+}
+
+    #volverListado:hover {
+        background: #015958;
+        box-shadow: none;
+    }
+
+.anadirTablero {
+    color: white;
+    text-decoration: none;
+    background: #008F8C;
+    padding: 5px 10px;
+    font-size: 19px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px -1px gray;
+    font-weight: 500;
+    transition: all 0.5s ease;
+    cursor: pointer;
+    margin-left: 50px;
+}
+
+    .anadirTablero:hover {
+        background: #015958;
+        box-shadow: none;
+    }
+
+#volverListarTareas {
+    margin-left: 600px;
+}
+
+
+    #volverListarTareas:hover {
+        color: white;
+    }
+
+#btnVerListadoTareas {
+    float: right;
+    padding: 10px;
+    background: #808080;
+    font-size: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px gray;
+    transition: 0.5s;
+    border: none;
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+    #btnVerListadoTareas:hover {
+        background: #6c6c6c;
+    }
+
+#horariosTarea {
+    display: flex;
+}
+
+#horaTarea {
+    margin-left: 10px;
+    background-color: #027373;
+    width: 105px;
+}
+
+#vacaciones {
+    width: 50%;
+    margin-left: 40px;
+    float: left;
+    margin-top: 30px;
+}
+
+#contenidoVacaciones {
+    float: right;
+    width: 40%;
+    margin-right: 50px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+#contenidoVacaciones div {
+    margin-top: 20px;
+}
+
+.fc .fc-view-harness {
+    flex-grow: 1;
+    position: relative;
+    background: white;
+    box-shadow: 5px 5px 10px -5px gray;
+}
+
+.fc .fc-highlight {
+    background: #a9d9d099;
+}
+
+.fc .fc-scrollgrid-section-footer > *, .fc .fc-scrollgrid-section-header > * {
+    background: #008F8C;
+    color: white;
+    border: none;
+}
+
+#botonVacaciones {
+    /*display: none;*/
+    border: none;
+    background: #008F8C;
+    padding: 10px;
+    width: 250px;
+    margin: 25px;
+    color: white;
+    border-radius: 10px;
+    font-size: 20px;
+    box-shadow: 2px 2px 6px -1px gray;
+    transition: all 0.5s ease;
+}
+
+#solicitarVacaciones {
+    /*display: none;*/
+    border: none;
+    background: #008F8C;
+    padding: 10px;
+    width: 250px;
+    margin: 25px;
+    color: white;
+    border-radius: 10px;
+    font-size: 20px;
+    box-shadow: 2px 2px 6px -1px gray;
+    transition: all 0.5s ease;
+}
+
+#botonVacaciones:hover {
+    background: #015958;
+    box-shadow: none;
+}
+
+#solicitarVacaciones:hover {
+    background: #015958;
+    box-shadow: none;
+}
+
+#parrafoSolicitud {
+    background: white;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 20px;
+    box-shadow: 2px 2px 5px -1px gray;
+}
+
+.fechaBold {
+    font-weight: bold;
+    color: #023535;
+}
+
+.botonSolicitud {
+    display: inline;
+    text-decoration: none;
+    background: #008F8C;
+    padding: 5px 10px;
+    color: white;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 6px -1px gray;
+    transition: all 0.5s ease;
+}
+
+    .botonSolicitud:hover {
+        background: #015958;
+        color: white;
+        text-decoration: none;
+        box-shadow: none;
+    }
+
+#fechaSelecta {
+    display: none;
+    background: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 2px 2px 5px -1px gray;
+}
+
+#formularioVacaciones {
+    background: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 2px 2px 5px -1px gray;
+}
+
+    #formularioVacaciones div {
+        display: flex;
+        align-items: center;
+        justify-content: center
+    }
+
+#formularioVacaciones label {
+    margin-bottom: 0px;
+    margin-left: 15px;
+}
+
+#formularioVacaciones input {
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 7px;
+}
+
+#formularioVacaciones select {
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 7px;
+}
+
+    #formularioVacaciones input[type=submit] {
+        display: inline;
+        text-decoration: none;
+        background: #008F8C;
+        padding: 5px 10px;
+        color: white;
+        margin: 10px;
+        border-radius: 5px;
+        box-shadow: 2px 2px 6px -1px gray;
+        transition: all 0.5s ease;
+        border: none;
+    }
+
+#tablaVacaciones {
+    background: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 2px 2px 5px -1px gray;
+}
+
+#tablaVacaciones table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    #tablaVacaciones table a {
+        text-decoration: none;
+        color: #015958;
+        font-weight: bold;
+    }
+
+    #tablaVacaciones table th {
+        background: #008F8C;
+        color: white;
+    }
+
+    #tablaVacaciones table tr {
+        border-bottom: 1px solid #023535;
+        transition: all 0.2s ease;
+    }
+
+    #tablaVacaciones table tr:hover {
+        background: #A9D9D0;
+    }
+
+#confirmacionVacaciones {
+    background: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 2px 2px 5px -1px gray;
+}
+
+#elegirVacaciones {
+    background: #a9d9d08c;
+    border: 1px solid #015958;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 2px 2px 5px -1px gray;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.parrafoSolicitudes {
+    background: #A9D9D0;
+    height: 100px;
+    margin-bottom: 0px;
+    font-size: 19px;
+    padding-top: 10px;
+}
+
+    .parrafoSolicitudes:nth-child(even) {
+        background: #b9dbd4;
+    }
+
+    .parrafoSolicitudes a {
+        text-decoration: none;
+        background: #008F8C;
+        padding: 5px 10px;
+        color: white;
+        margin: auto;
+        margin-top: 10px;
+        border-radius: 5px;
+        box-shadow: 2px 2px 6px -1px gray;
+        transition: all 0.5s ease;
+        width: 50%;
+    }
+
+        .parrafoSolicitudes a:hover {
+            text-decoration: none;
+            background: #015958;
+            box-shadow: none;
+            color: white;
+        }

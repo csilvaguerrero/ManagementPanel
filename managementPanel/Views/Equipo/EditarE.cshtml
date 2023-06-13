@@ -1,0 +1,54 @@
+﻿@using managementPanel.Models
+
+
+
+@{
+    ViewBag.Title = "EditarE";
+    Equipos equipo = Model[0];
+    var page = Model[1];
+}
+
+
+
+<h2 id="tituloInsertarEquipo">Editar a @equipo.Nombre</h2>
+<div id="containerRegistrar">
+    <div id="divAnadirEquipo">
+        <a href="@Url.Action("ListarEquipos", "Equipo", new {})" class="cruz"><span class="material-symbols-outlined">close</span></a>
+        <form class="form" method="post">
+            <input type="hidden" name="IdEquipo" value="@equipo.IdEquipo" />
+            <input type="hidden" name="page" value="@page" />
+            <div class="form-group">
+                <label for="Nombre">Nombre</label><br />
+                <input name="Nombre" type="text" maxlength="100" required="" class="form-control" placeholder="Nombre" id="EquipoControlar2" value="@equipo.Nombre" /><br />
+                <span id="errore2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="Departamento">Departamento</label><br />
+                <select name="Departamento" id="Departamento">
+                    <option value="Desarrollo" @(equipo.Departamento == "Desarollo" ? "selected" : "")>Desarrollo</option>
+                    <option value="Ampliaciones" @(equipo.Departamento == "Ampliaciones" ? "selected" : "")>Ampliaciones</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="Descripcion">Descripción</label><br />
+<textarea name="Descripcion" maxlength="255" class="form-control" id="Descripcion" rows="5" cols="50">@equipo.Descripcion</textarea>
+            </div>
+
+
+
+            <div class="submit">
+                <input type="submit" value="Editar" class="btn btn-primary pull-right" id="button-blue" onclick="registrarEToast()" />
+                <div class="ease"></div>
+            </div>
+            <br />
+            <div class="submit">
+                <input type="reset" value="Borrar Campos" class="btn btn-danger pull-right" id="button-reset">
+                <div class="ease"></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<br />

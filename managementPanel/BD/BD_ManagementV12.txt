@@ -1,0 +1,100 @@
+DROP DATABASE DB_Management
+
+CREATE DATABASE DB_Management
+
+USE DB_Management;
+
+--CREACIÓN DE TABLAS--
+
+
+--Crear tabla Equipos
+CREATE TABLE Equipos(
+    IdEquipo INT PRIMARY KEY IDENTITY(1,1),
+    Nombre varchar(50) NOT NULL UNIQUE,
+    Departamento varchar(50) NOT NULL,
+    Descripcion varchar(255)
+);
+ALTER TABLE Equipos ADD CONSTRAINT ck_depto CHECK (Departamento='Desarrollo' OR Departamento='Ampliaciones');
+
+
+--Crear tabla Usuarios
+CREATE TABLE Usuarios(
+    IdUsuario INT PRIMARY KEY IDENTITY(1,1),
+    Nombre VARCHAR(50) NOT NULL,
+    Apellidos VARCHAR(100) NOT NULL,
+    Usuario VARCHAR(50) NOT NULL UNIQUE,
+    Contrasenna VARCHAR(255) NOT NULL,
+    Admin BIT,
+    Consultor BIT NULL
+);
+
+ 
+
+--Crear tabla EquiposDeUsuarios
+CREATE TABLE EquiposDeUsuarios(
+    IdUsuario INT NOT NULL,
+    IdEquipo INT NOT NULL
+);
+
+
+--Añadimos las claves que corresponen a los campos de la tabla EquiposUsuarios
+ALTER TABLE EquiposDeUsuarios ADD CONSTRAINT PK_EquiposUsuarios PRIMARY KEY (IdUsuario, IdEquipo)
+ALTER TABLE EquiposDeUsuarios ADD CONSTRAINT fk_equipos FOREIGN KEY (IdEquipo) REFERENCES Equipos(IdEquipo) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE EquiposDeUsuarios ADD CONSTRAINT fk_usuarios FOREIGN KEY (IdUsuario) REFERENCES Usuarios(IdUsuario) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ 
+
+--Crear tabla proyectos
+CREATE TABLE Proyectos(
+    Codigo VARCHAR(100) PRIMARY KEY,
+    Nombre VARCHAR(255) NOT NULL,
+    Completado INT NOT NULL,
+    FechaComienzo DATE NOT NULL,
+    Fase VARCHAR(50) CHECK(Fase IN('Ordered','Kickoff','Design','Development','Preparing','HyperCare','RemoteHyperCare','Ended','CustomerDelay','Stopped','Canceled')) NOT NULL,
+    HorasNormales DECIMAL(10,2) NOT NULL,
+    HorasEspeciales DECIMAL (10,2) NOT NULL,
+    HorasReales DECIMAL(10,2) NOT NULL,
+	HorasAnalisis DECIMAL (10,2) NOT NULL,
+	HorasDesarrollo DECIMAL (10,2) NOT NULL,
+    FechaInicio DATE NULL,
+    FechaDisenio DATE NULL,
+    FechaValidacion DATE NULL,
+    FechaEnVivo DATE NULL,
+    FechaRecepcion DATE NULL,
+    FechaFin DATE NULL,
+    Cliente VARCHAR(255) NOT NULL,
+    IdUsuario INT,
+    JefeProyecto VARCHAR(200),
+    Consultor VARCHAR(200),
+    CodigoOferta VARCHAR(50) NOT NULL,
+    Replanificaciones INT,
+    Incidencias INT,
+    Desviacion DECIMAL(5,2) NOT NULL,
+    DesviacionDesarrollo DECIMAL (5,2) NOT NULL,
+    DesviacionAnalisis DECIMAL (5,2) NOT NULL
+);
+
+ALTER TABLE Proyectos ADD CONSTRAINT fk_idUsuario FOREIGN KEY (IdUsuario) REFERENCES Usuarios(IdUsuario) ON UPDATE CASCADE ON DELETE CASCADE;
+
+CREATE TABLE Tareas(
+	IdTarea INT PRIMARY KEY IDENTITY(1,1),
+	IdUsuario INT NOT NULL,
+	IdProyecto VARCHAR(100),
+	Titulo VARCHAR(255) NOT NULL,
+	Horas DECIMAL (10,2),
+	Descripcion VARCHAR(255) NULL,
+	FechaFin DATE NULL,
+	Estado VARCHAR(50) CHECK(Estado IN('Por hacer','En curso','Bloqueo','Listo')) NOT NULL,
+);
+
+ALTER TABLE Tareas ADD CONSTRAINT fk_tareas_idUsuario FOREIGN KEY (IdUsuario) REFERENCES Usuarios(IdUsuario) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE Tareas ADD CONSTRAINT fk_tareas_IdProyecto FOREIGN KEY (IdProyecto) REFERENCES Proyectos(Codigo) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+INSERT INTO Tareas(idUsuario, IdProyecto, Titulo, Horas, Descripcion, FechaFin, Estado)
+VALUES(1, NULL, 'Tarea2', 5.00, 'Descripcion tarea 2', '2023-05-17', 'Listo'),
+(1, NULL, 'Tarea3', 7.00, 'Descripcion tarea 3', '2023-05-18', 'Por hacer'),
+(1, NULL, 'Tarea4', 8.30, 'Descripcion tarea 4', '2023-05-19', 'En curso'),
+(1, NULL, 'Tarea5', 12.00, 'Descripcion tarea 5', '2023-05-20', 'Listo'),
+(1, NULL, 'Tarea6', 1.10, 'Descripcion tarea 6', '2023-05-21', 'Por hacer'),
+(1, NULL, 'Tarea7', 3.50, 'Descripcion tarea 7', '2023-05-22', 'Bloqueo'),
+(4, 3211085767, 'Tarea9', 1.50, 'Descripcion tarea 9', '2023-05-23', 'En curso');

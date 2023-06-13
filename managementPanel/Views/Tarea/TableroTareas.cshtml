@@ -1,0 +1,523 @@
+﻿@using managementPanel.Models
+
+@{
+    DB_ManagementEntities contexto = new DB_ManagementEntities();
+
+    ViewBag.Title = "Tablero Tareas";
+
+    List<Usuarios> usuarios = Model[0];
+    List<Tareas> tareas = Model[1];
+    string idProyect = Model[2];
+
+    List<Proyectos> proyectos = new List<Proyectos>();
+    foreach (Proyectos p in contexto.Proyectos.ToList())
+    {
+        if (p.IdUsuario == ((Usuarios)Session["usuario"]).IdUsuario)
+        {
+            proyectos.Add(p);
+        }
+    }
+
+    decimal hPorHacer = 0;
+    decimal hEnCurso = 0;
+    decimal hBloqueo = 0;
+    decimal hListo = 0;
+
+    foreach (Tareas t in tareas)
+    {
+        decimal horas = t.Horas ?? 0;
+
+        switch (t.Estado)
+        {
+            case "Por hacer":
+                hPorHacer += horas;
+                break;
+            case "En curso":
+                hEnCurso += horas;
+                break;
+            case "Bloqueo":
+                hBloqueo += horas;
+                break;
+            case "Listo":
+                hListo += horas;
+                break;
+        }
+    }
+
+}
+
+<script>
+
+    window.onload = cerrarFormulario();
+
+    function abrirFormulario() {
+        $('.form-popup-bg').addClass('is-visible');
+    }
+
+    function cerrarFormulario() {
+        $('.form-popup-bg').removeClass('is-visible');
+    }
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var destino = ev.target.id;
+
+        var uri='@Url.Action("CambiarEstado", "Tarea")';
+        $.ajax({
+            type: "GET",
+            url: uri,
+            data: { idTarea: data, estado: destino},
+            success: function () {
+                location.reload();
+            }
+        });
+    }
+
+    var formData;
+    function enviarFormulario() {
+         formData = $('form.enviarUsuario').serialize();
+        $.ajax({
+            url: '/Tarea/TableroTareas',
+            type: 'GET',
+            data: formData,
+            success: function () {
+                var url = '/Tarea/TableroTareas?'+formData;
+                window.location.href = url;
+            }
+        });
+    }
+
+    function mostrarModal(idTarea, idUsuario, idProyecto, titulo, horas, descripcion, fechaFin, estado) {
+        // Mostrar el modal
+        $('#modal').fadeIn(200);
+
+        // Crear el formulario de edición de tarea
+        var form = '<form id="editarTareaForm">';
+        form += '<input type="hidden" name="idTarea" value="' + idTarea + '">';
+        form += '<input type="hidden" name="idUsuario" value="' + idUsuario + '">';
+        form += '<input type="hidden" name="idProyecto" value="' + idProyecto + '">';
+        form += '<label for="descripcion">Titulo:</label><br/>';
+        form += '<input type="text" class="form-control" name="titulo" value="' + titulo + '"><br/><br/>';
+        form += '<label for="descripcion">Descripción:</label><br/>';
+        form += '<input type="text" class="form-control" name="descripcion" value="' + descripcion + '"><br/><br/>';
+        form += '<label for="descripcion">Horas:</label><br/>';
+        form += '<input type="text" class="form-control" name="horas" min = "0" max = "1000000" value="' + horas + '"><br/><br/>';
+        form += '<label for="fechaFin">Fecha fin:</label><br/>';
+        form += '<input type="date" class="form-control" name="fechaFin" value="' + fechaFin + '"><br/><br/>';
+        form += '<label for="estado">Estado: </label><br/>';
+        form += '<select name="estado" class="form-control"><br/>';
+        form += '<option value="Por hacer" ' + (estado === 'Por hacer' ? 'selected' : '') + '>Por hacer</option>';
+        form += '<option value="En curso" ' + (estado === 'En curso' ? 'selected' : '') + '>En curso</option>';
+        form += '<option value="Bloqueo" ' + (estado === 'Bloqueo' ? 'selected' : '') + '>Bloqueo</option>';
+        form += '<option value="Listo" ' + (estado === 'Listo' ? 'selected' : '') + '>Listo</option>';
+        form += '</select><br /><br />';
+        form += '<input id="modificarTarea" class="btn btn-primary pull-right" type="submit" value="Editar"><input id="borrarTarea" class="btn btn-danger pull-right" type="button" value="Eliminar" onclick="eliminarTarea(' + idTarea + ')">';
+        form += '</form><a href="@Url.Action("TableroTareas", "Tarea", new {})" class="cruz"><span class="material-symbols-outlined">close</span></a>';
+
+        // Mostrar el formulario en el contenido del modal
+        $('#modal-content').html(form);
+
+        // Enviar la solicitud de edición de tarea al servidor cuando se envíe el formulario
+        $('#editarTareaForm').submit(function (event) {
+            event.preventDefault();
+            var datosFormulario = $(this).serialize();
+            $.ajax({
+                url: '/Tarea/EditarTarea',
+                type: 'POST',
+                data: datosFormulario,
+                success: function (result) {
+                    $('#modal').hide();
+                    location.reload();
+                },
+                error: function () {
+                    // Mostrar un mensaje de error si la solicitud de edición falla
+                    alert('Error al editar la tarea.');
+                }
+            });
+        });
+
+        // Cerrar el modal cuando se haga clic en el botón de cerrar
+        $('.cerrarModal').click(function () {
+            $('#modal').hide();
+        });
+    }
+
+    function eliminarTarea(idTarea) {
+        $.ajax({
+            url: "/Tarea/EliminarTarea",
+            type: 'POST',
+            data: { idTarea: idTarea },
+            success: function () {
+                $('#modal').hide();
+                location.reload();
+            },
+            error: function () {
+                alert("Ha ocurrido un error al eliminar la tarea.");
+            }
+        });
+    }
+
+</script>
+@*@if (idProyect != null && idProyect != "Ver todas")
+    {
+        Proyectos p = contexto.Proyectos.FirstOrDefault(x => x.Codigo == idProyect);
+        <h3>@p.Nombre</h3>
+    }*@
+<div class="cajaFiltros">
+    <div class="filtros">
+        @using (Html.BeginForm("TableroTareas", "Tarea", FormMethod.Post))
+        {
+            <input type="text" name="buscar" id="buscar" placeholder="Buscar" />
+            <button type="submit" id="botonBuscar" class="botonBuscar">
+                <span class="material-icons-outlined">search</span>
+            </button>
+        }
+    </div>
+
+    @if (((Usuarios)Session["usuario"]).Admin == true)
+    {
+        <form method="post" class="enviarUsuario">
+            <div class="filtros">
+                <label>Usuarios: </label>
+                <select class="form-control" name="Usuario" onchange="enviarFormulario()">
+                    <option disabled selected>Elige un usuario</option>
+                    <option value="Ver todas">Ver todas las tareas</option>
+                    @foreach (Usuarios u in usuarios)
+                    {
+                        if (!u.Usuario.Equals("admin"))
+                        {
+                            <option value="@u.Usuario">@u.Usuario</option>
+                        }
+                    }
+                </select>
+            </div>
+        </form>
+    }
+
+    @if (proyectos.Count > 0)
+    {
+        <form method="post" class="enviarUsuario">
+            <div class="filtros">
+                <label>Proyectos: </label>
+                <select class="form-control" name="idProyecto" onchange="enviarFormulario()">
+                    <option disabled selected>Elige un proyecto</option>
+                    <option value="Ver todas">Ver todas</option>
+                    @foreach (Proyectos p in proyectos)
+                    {
+                        <option value="@p.Codigo" @(p.Codigo == idProyect ? "selected" : "")>@p.Nombre</option>
+                    }
+                </select>
+            </div>
+        </form>
+    }
+
+
+
+
+    <a id="volverListarTareas" href="@Url.Action("ListarTareas", "Tarea")" class="enl anadirTablero">
+        <span class="material-symbols-outlined iconosTrabajo">
+            view_list
+        </span>
+    </a>
+
+    <div class="filtros">
+        <span id="btnOpenForm" class="material-symbols-outlined anadirTablero" onclick="abrirFormulario()">add</span>
+    </div>
+</div>
+
+<div>
+    <div class="tareasDiv">
+        @if (tareas.Count > 0)
+        {
+            <div class="tareaEstado" id="Por hacer" ondrop="drop(event)" ondragover="allowDrop(event)">
+
+                <h4 class="tituloTablero">Por Hacer - @hPorHacer h</h4>
+
+                @foreach (Tareas t in tareas)
+                {
+                    if (t.Estado.Equals("Por hacer"))
+                    {
+                        <div class="tareaTablero" id="@t.IdTarea" draggable="true" ondragstart="drag(event)" onclick="mostrarModal('@t.IdTarea', '@t.IdUsuario', '@t.IdProyecto','@t.Titulo', '@t.Horas','@t.Descripcion', '@(t.FechaFin != null ? Convert.ToDateTime(t.FechaFin).ToString("yyyy-MM-dd") : "")', '@t.Estado')">
+                            <div class="datosTablero">
+                                <h4 class="tituloTarea">@t.Titulo</h4>
+
+                                <div id="horariosTarea">
+                                    <span class="fechaTarea">
+                                        <span class="material-symbols-outlined verTablero">calendar_month</span>
+                                        @if (t.FechaFin == null)
+                                        {
+                                            <span>Sin fecha</span>
+                                        }
+                                        else
+                                        {
+                                            @Convert.ToDateTime(t.FechaFin).ToString("dd/MM/yyyy")
+                                        }
+                                    </span>
+                                    <span id="horaTarea" class="fechaTarea">
+                                        <span class="material-symbols-outlined verTablero">schedule</span>
+                                        @if (t.Horas == null)
+                                        {
+                                            <span>0 h</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@t.Horas h</span>
+                                        }
+                                    </span>
+                                </div>
+                                @if (((Usuarios)Session["usuario"]).Admin == true)
+                                {
+                                    foreach (var u in usuarios)
+                                    {
+                                        if (u.IdUsuario == t.IdUsuario)
+                                        {
+                                            <span>Responsable: @u.Nombre @u.Apellidos</span>
+                                        }
+                                    }
+                                }
+                            </div>
+                            <div>
+                                <span id="noComenzado" class="material-symbols-outlined iconoEstado">unpublished</span>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="tareaEstado" id="En curso" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h4 class="tituloTablero">En curso - @hEnCurso h</h4>
+                @foreach (Tareas t in tareas)
+                {
+                    if (t.Estado.Equals("En curso"))
+                    {
+                        <div class="tareaTablero" id="@t.IdTarea" draggable="true" ondragstart="drag(event)" onclick="mostrarModal('@t.IdTarea', '@t.IdUsuario', '@t.IdProyecto','@t.Titulo', '@t.Horas','@t.Descripcion', '@(t.FechaFin != null ? Convert.ToDateTime(t.FechaFin).ToString("yyyy-MM-dd") : "")', '@t.Estado')">
+                            <div class="datosTablero">
+                                <h4 class="tituloTarea">@t.Titulo</h4>
+                                <div id="horariosTarea">
+                                    <span class="fechaTarea">
+                                        <span class="material-symbols-outlined verTablero">calendar_month</span>
+                                        @if (t.FechaFin == null)
+                                        {
+                                            <span>Sin fecha</span>
+                                        }
+                                        else
+                                        {
+                                            @Convert.ToDateTime(t.FechaFin).ToString("dd/MM/yyyy")
+                                        }
+                                    </span>
+                                    <span id="horaTarea" class="fechaTarea">
+                                        <span class="material-symbols-outlined verTablero">schedule</span>
+                                        @if (t.Horas == null)
+                                        {
+                                            <span>0 h</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@t.Horas h</span>
+                                        }
+                                    </span>
+                                </div>
+                                @if (((Usuarios)Session["usuario"]).Admin == true)
+                                {
+                                    foreach (var u in usuarios)
+                                    {
+                                        if (u.IdUsuario == t.IdUsuario)
+                                        {
+                                            <span>Responsable: @u.Nombre @u.Apellidos</span>
+                                        }
+                                    }
+                                }
+                            </div>
+                            <div>
+                                <span id="enProceso" class="material-symbols-outlined iconoEstado">clock_loader_40</span>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="tareaEstado" id="Bloqueo" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h4 class="tituloTablero">Bloqueo - @hBloqueo h</h4>
+                @foreach (Tareas t in tareas)
+                {
+                    if (t.Estado.Equals("Bloqueo"))
+                    {
+                        <div class="tareaTablero" id="@t.IdTarea" draggable="true" ondragstart="drag(event)" onclick="mostrarModal('@t.IdTarea', '@t.IdUsuario', '@t.IdProyecto','@t.Titulo', '@t.Horas','@t.Descripcion', '@(t.FechaFin != null ? Convert.ToDateTime(t.FechaFin).ToString("yyyy-MM-dd") : "")', '@t.Estado')">
+                            <div class="datosTablero">
+                                <h4 class="tituloTarea">@t.Titulo</h4>
+                                <div id="horariosTarea">
+                                    <span class="fechaTarea">
+                                        <span class="material-symbols-outlined verTablero">calendar_month</span>
+                                        @if (t.FechaFin == null)
+                                        {
+                                            <span>Sin fecha</span>
+                                        }
+                                        else
+                                        {
+                                            @Convert.ToDateTime(t.FechaFin).ToString("dd/MM/yyyy")
+                                        }
+                                    </span>
+                                    <span id="horaTarea" class="fechaTarea">
+                                        <span class="material-symbols-outlined verTablero">schedule</span>
+                                        @if (t.Horas == null)
+                                        {
+                                            <span>0 h</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@t.Horas h</span>
+                                        }
+                                    </span>
+                                </div>
+                                @if (((Usuarios)Session["usuario"]).Admin == true)
+                                {
+                                    foreach (var u in usuarios)
+                                    {
+                                        if (u.IdUsuario == t.IdUsuario)
+                                        {
+                                            <span>Responsable: @u.Nombre @u.Apellidos</span>
+                                        }
+                                    }
+                                }
+                            </div>
+                            <div>
+                                <span id="block" class="material-symbols-outlined iconoEstado">block</span>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="tareaEstado" id="Listo" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h4 class="tituloTablero">Listo - @hListo h</h4>
+                @foreach (Tareas t in tareas)
+                {
+                    if (t.Estado.Equals("Listo"))
+                    {
+                        <div class="tareaTablero" id="@t.IdTarea" draggable="true" ondragstart="drag(event)" onclick="mostrarModal('@t.IdTarea', '@t.IdUsuario', '@t.IdProyecto','@t.Titulo', '@t.Horas','@t.Descripcion', '@(t.FechaFin != null ? Convert.ToDateTime(t.FechaFin).ToString("yyyy-MM-dd") : "")', '@t.Estado')">
+                            <div class="datosTablero">
+                                <h4 class="tituloTarea">@t.Titulo</h4>
+                                <div id="horariosTarea">
+                                    <span class="fechaTarea">
+                                        <span class="material-symbols-outlined verTablero">calendar_month</span>
+                                        @if (t.FechaFin == null)
+                                        {
+                                            <span>Sin fecha</span>
+                                        }
+                                        else
+                                        {
+                                            @Convert.ToDateTime(t.FechaFin).ToString("dd/MM/yyyy")
+                                        }
+                                    </span>
+                                    <span id="horaTarea" class="fechaTarea">
+                                        <span class="material-symbols-outlined verTablero">schedule</span>
+                                        @if (t.Horas == null)
+                                        {
+                                            <span>0 h</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@t.Horas h</span>
+                                        }
+                                    </span>
+                                </div>
+                                @if (((Usuarios)Session["usuario"]).Admin == true)
+                                {
+                                    foreach (var u in usuarios)
+                                    {
+                                        if (u.IdUsuario == t.IdUsuario)
+                                        {
+                                            <span>Responsable: @u.Nombre @u.Apellidos</span>
+                                        }
+                                    }
+                                }
+                            </div>
+                            <div>
+                                <span id="done" class="material-symbols-outlined iconoEstado">done</span>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <div id="modal">
+                <div id="modal-content"></div>
+            </div>
+        }
+        else
+        {
+            <div class="mensaje">SIN TAREAS </div>
+        }
+    </div>
+
+</div>
+<div class="form-popup-bg">
+    <div class="form-container">
+        <button id="btnCloseForm" class="close-button" onclick="cerrarFormulario()">X</button>
+        <h1>AÑADIR NUEVA TAREA</h1>
+        <p>Complete la información para añadir una nueva tarea.</p>
+
+        @using (Html.BeginForm("InsertarTareas", "Tarea", FormMethod.Post))
+        {
+            <div class="divFormTareas">
+                @if (((Usuarios)Session["usuario"]).Admin == true)
+                {
+                    <label for="">Encargado</label>
+                    <select class="form-control" name="IdUsuario">
+                        @foreach (var user in usuarios)
+                        {
+                            <option value="@user.IdUsuario">@user.Nombre</option>
+                        }
+                    </select>
+                }
+                else
+                {
+                    <input type="hidden" name="IdUsuario" value="@(((Usuarios)Session["usuario"]).IdUsuario)" />
+                }
+            </div>
+            <div class="divFormTareas">
+                <label for="">Título tarea</label>
+                <input class="form-control" type="text" name="Titulo" required />
+            </div>
+            <div class="divFormTareas">
+                <label for="">Fecha fin</label>
+                <input class="form-control" type="date" name="FechaFin" />
+            </div>
+            <div class="divFormTareas">
+                <label for="">Horas estimadas</label>
+                <input class="form-control" type="text" name="Horas" />
+            </div>
+            <div class="divFormTareas">
+                <label>Proyectos: </label>
+                <select class="form-control" name="IdProyecto">
+                    <option disabled selected>Elige un proyecto</option>
+                    <option value="">Sin proyecto</option>
+                    @foreach (Proyectos p in proyectos)
+                    {
+                        <option value="@p.Codigo" @(p.Codigo == idProyect ? "selected" : "")>@p.Nombre</option>
+                    }
+                </select>
+            </div>
+            <div class="divFormTareas">
+                <label for="">Estado</label>
+                <select class="form-control" name="Estado">
+                    <option value="Por hacer">Por hacer</option>
+                    <option value="En curso">En curso</option>
+                    <option value="Bloqueo">Bloqueo</option>
+                    <option value="Lista">Lista</option>
+                </select>
+            </div>
+            <div class="divFormTareas">
+                <label for="">Descripción</label>
+                <textarea class="form-control" type="date" name="Descripcion"></textarea>
+            </div>
+            <button type="submit" id="botonAnadirtarea" value="Registrar">AÑADIR</button>
+        }
+    </div>
+</div>

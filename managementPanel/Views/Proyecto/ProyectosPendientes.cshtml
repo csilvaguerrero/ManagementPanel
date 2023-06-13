@@ -1,0 +1,183 @@
+﻿@using managementPanel.Models
+
+@model List<Tuple<DateTime?, string, string, string>>
+
+@section scripts{
+    <script src='~/contentmanagement/FullCalendar/fullcalendar-6.1.6/dist/index.global.js'></script>
+    <script src='~/contentmanagement/FullCalendar/fullcalendar-6.1.6/dist/index.global.min.js'></script>
+    <script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+    <script src="/tdk/scripts/jquery.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/tdk/scripts/bootstrap.js" type="text/javascript"></script>
+    <script src="/tdk/scripts/jquery.dataTables.js" type="text/javascript"></script>
+    <script src="/tdk/scripts/dataTables.bootstrap.js" type="text/javascript"></script>
+
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var filas = $("#misProyectos tbody tr");
+            var numFilas = filas.length;
+            var filasOcultas = numFilas - 7;
+            if (filasOcultas > 0) {
+                filas.slice(7).hide();
+                $("#button-blue2").on("click", function () {
+                    filas.slice(7).toggle();
+                    $(this).text($(this).text() == "Ver más" ? "Ver menos" : "Ver más");
+                });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendario');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                eventMouseEnter: function (info) {
+                    $(info.el).tooltip({
+                        title: info.event.title
+                    });
+                },
+
+            initialView: 'dayGridMonth',
+                locale: 'es',
+
+                monthNames: [
+                    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+                ],
+
+                monthNamesShort: [
+                    'ene', 'feb', 'mar', 'abr', 'may', 'jun',
+                    'jul', 'ago', 'sep', 'oct', 'nov', 'dic'
+                ],
+
+                dayNames: [
+                    'domingo', 'lunes', 'martes', 'miércoles',
+                    'jueves', 'viernes', 'sábado'
+                ],
+
+                dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
+                allDayText: 'Todo el día',
+
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día',
+                    list: 'Lista',
+                },
+              events: [
+                @foreach (var fecha in Model)
+                {
+                    if (fecha.Item1 != null)
+                    {
+                        <text>
+                        {
+                            title: '@fecha.Item3',
+                            start: '@fecha.Item1.Value.ToString("yyyy-MM-dd")',
+                            color: '@(fecha.Item4 == "Inicio" ? "#FB00FF" : (fecha.Item4 == "Validacion" ? "#E53935" : (fecha.Item4 == "Recepcion" ? "#5E35B1" : (fecha.Item4 == "En Vivo" ? "#039BE5" : (fecha.Item4 == "Fin" ? "#7CB342" : "#FFB300")))))',
+                            description: '@fecha.Item2'
+                        },
+                        </text>
+                    }
+                }
+            ],
+            selectable: false,
+            editable: false,
+            dayMaxEvents: true,
+            firstDay: 1,            
+            eventMouseLeave: function (info) {
+                var tooltip = info.el._tippy;
+                if (tooltip) {
+                    tooltip.hide();
+                    tooltip.destroy();
+                }
+            }
+            });
+            calendar.render();
+        });
+    </script>
+}
+
+@if (Model.Count != 0)
+{
+    <div class="cajaTablaProyectos" id="misProyectos">
+        <table class="table">
+            <thead>
+                <tr class="headTabla">
+                    <th>Nombre</th>
+                    <th>Tarea</th>
+                    <th>Semana</th>
+                    <th>Fecha</th>
+                    @if (((Usuarios)Session["usuario"]).Admin == true || ((Usuarios)Session["usuario"]).Consultor == true)
+                    {
+                        <th>Jefe</th>
+                    }
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var fecha in Model)
+                {
+                    if (fecha.Item1 > DateTime.Now.AddDays(-1))
+                    {
+                        <tr class="hoverTabla">
+                            <td>@fecha.Item3</td>
+                            <td>@fecha.Item4</td>
+                            <td>
+                                @{
+                                    DateTime inicioAnio = new DateTime(@Convert.ToDateTime(fecha.Item1).Year, 1, 1);
+                                    DateTime fechaActual = @Convert.ToDateTime(fecha.Item1);
+                                    double numeroSemanas = (fechaActual - inicioAnio).TotalDays / 7;
+
+                                    if ((numeroSemanas / (int)numeroSemanas) > 0)
+                                        numeroSemanas = (int)numeroSemanas + 1;
+
+                                }
+                                @numeroSemanas
+                            </td>
+                            <td>@(fecha.Item1.HasValue ? fecha.Item1.Value.ToShortDateString() : "")</td>
+                            @if (((Usuarios)Session["usuario"]).Admin == true || ((Usuarios)Session["usuario"]).Consultor == true)
+                            {
+                                <td>@fecha.Item2</td>
+                            }
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        @if (Model.Count > 7)
+        {
+            <button id="button-blue2">Ver más</button>
+        }
+    </div>
+
+    <div class="cajaTablaCalendario">
+        <div id="leyenda">
+            <ul>
+                <li><span class="cuadrado rosa"></span>Inicio&nbsp;&nbsp;&nbsp;</li>
+                <li><span class="cuadrado amarillo"></span>Diseño&nbsp;&nbsp;&nbsp;</li>
+                <li><span class="cuadrado rojo"></span>Validacion&nbsp;&nbsp;&nbsp;</li>
+                <li><span class="cuadrado azul"></span>En Vivo&nbsp;&nbsp;&nbsp;</li>
+                <li><span class="cuadrado morado"></span>Recepcion&nbsp;&nbsp;&nbsp;</li>
+                <li><span class="cuadrado verde"></span>Fin&nbsp;&nbsp;&nbsp;</li>
+            </ul>
+        </div>
+        <div id="calendario"></div>
+    </div>
+}
+else
+{
+    <h2 class="noDatos">¡No hay ninguna tarea pendiente!</h2>
+}
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.6/locale-all.js'></script>
+

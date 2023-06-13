@@ -1,0 +1,204 @@
+﻿@using managementPanel.Models
+
+@{
+    ViewBag.Title = "Editar Proyecto";
+    List<Usuarios> usuarios = Model[0];
+    Proyectos proyecto = Model[1];
+    List<string> pedidos = new List<string>() { "Ordered", "Kickoff", "Design", "Development", "Preparing", "HyperCare", "RemoteHyperCare", "Ended", "CustomerDelay", "Stopped", "Canceled" };
+
+    int page = Model[2];
+    int size = Model[3];
+    string projectS = Model[4];
+    string campoOrden = Model[5];
+}
+<h2>Editar proyecto @proyecto.Nombre </h2>
+
+<div class="formularioProyecto">
+    <a href="@Url.Action("VerProyecto", "Proyecto", new {codigo = proyecto.Codigo})" class="cruz"><span class="material-symbols-outlined">close</span></a>
+    @using (Html.BeginForm("EditarProyecto", "Proyecto", FormMethod.Post))
+    {
+
+        @Html.HiddenFor(model => proyecto.Codigo)
+        @Html.HiddenFor(model => page)
+        @Html.HiddenFor(model => size)
+        @Html.HiddenFor(model => projectS)
+        @Html.HiddenFor(model => campoOrden)
+
+        <div class="datosGenerales">
+            <div class="form-group">
+                <label for="Nombre">Nombre</label>
+                @Html.TextBoxFor(model => proyecto.Nombre, htmlAttributes: new { @class = "campoProyecto", id = "Nombre", value = proyecto.Nombre, required = "" })<br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="Completado ">Porcentaje de completado </label>
+                @Html.TextBoxFor(model => proyecto.Completado, htmlAttributes: new { @class = "campoProyecto", id = "Completado ", required = "", type = "number", value = proyecto.Completado, min = "0", max = "100" })<br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="Fase">Fase</label>
+                @Html.DropDownListFor(model => proyecto.Fase, new SelectList(pedidos), new { @class = "campoProyecto", id = "Pedido", required = "required", value = proyecto.Fase })<br />
+
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="Cliente">Nombre del cliente</label>
+                @Html.TextBoxFor(model => proyecto.Cliente, htmlAttributes: new { @class = "campoProyecto", id = "Cliente", required = "", value = proyecto.Cliente })<br />
+            </div>
+            <br />
+
+            <div class="form-group">
+                <label for="JefeProyecto">Nombre jefe del proyecto:</label>
+                <select class="campoProyecto" name="IdUsuario" id="selectJefeProyecto">
+                    <option value=null selected>SIN TÉCNICO</option>
+                    @foreach (Usuarios e in usuarios)
+                    {
+                        if (proyecto.IdUsuario.ToString() != null && proyecto.IdUsuario.Equals(e.IdUsuario))
+                        {
+                            if (e.Nombre.Equals("admin"))
+                            {
+                                <option value=@e.IdUsuario.ToString() selected>@e.Nombre </option>
+
+                            }
+                            else
+                            {
+                                <option value=@e.IdUsuario.ToString() selected>@e.Nombre @e.Apellidos</option>
+                            }
+                        }
+                        else
+                        {
+                            if (e.Nombre.Equals("admin"))
+                            {
+                                <option value=@e.IdUsuario.ToString()>@e.Nombre </option>
+
+                            }
+                            else
+                            {
+                                <option value=@e.IdUsuario.ToString()>@e.Nombre @e.Apellidos</option>
+                            }
+                        }
+                    }
+                </select>
+                <br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="Consultor">Nombre del consultor:</label>
+                <select class="campoProyecto" name="Consultor" id="selectJefeProyecto">
+                    <option value=null selected>SIN CONSULTOR</option>
+                    @foreach (Usuarios e in usuarios)
+                    {
+                        if (!e.Nombre.Equals("admin") && e.Consultor==true)
+                        {
+                            if (proyecto.Consultor != null && proyecto.Consultor.Equals(e.Usuario))
+                            {
+                                <option value=@e.Usuario selected>@e.Nombre @e.Apellidos</option>
+                            }
+                            else
+                            {
+                                <option value=@e.Usuario>@e.Nombre @e.Apellidos</option>
+                            }
+                        }
+                    }
+                </select>
+                <br />
+            </div>
+
+            <br />
+            <div class="form-group">
+                <label for="Replanificaciones ">Replanificaciones</label>
+                @Html.TextBoxFor(model => proyecto.Replanificaciones, htmlAttributes: new { @class = "campoProyecto", id = "Replanificaciones ", type = "number", value = proyecto.Replanificaciones, min = "0" })<br />
+            </div>
+            <br />
+
+            <div class="form-group">
+                <label for="Incidencias">Incidencias</label>
+                @Html.TextBoxFor(model => proyecto.Incidencias, htmlAttributes: new { @class = "campoProyecto", id = "Incidencias ", type = "number", value = proyecto.Incidencias, min = "0" })<br /><br />
+            </div>
+
+            <div class="form-group">
+                <label for="CodigoOferta">Código de la oferta</label>
+                @Html.TextBoxFor(model => proyecto.CodigoOferta, htmlAttributes: new { @class = "campoProyecto", id = "CodigoOferta", required = "", value = proyecto.CodigoOferta })<br />
+            </div>
+        </div>
+
+        <div class="horas">
+            <div class="form-group">
+                <label for="HorasNormales">Horas normales</label>
+                @Html.TextBoxFor(model => proyecto.HorasNormales, htmlAttributes: new { @class = "campoProyecto", id = "HorasNormales", required = "", type = "text", value = proyecto.HorasNormales, min = "0", max = "1000000" })<br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="HorasEspeciales">Horas especiales</label>
+                @Html.TextBoxFor(model => proyecto.HorasEspeciales, htmlAttributes: new { @class = "campoProyecto", id = "HorasEspeciales", required = "", type = "text", value = proyecto.HorasEspeciales, min = "0", max = "1000000" })<br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="HorasReales">Horas reales</label>
+                @Html.TextBoxFor(model => proyecto.HorasReales, htmlAttributes: new { @class = "campoProyecto", id = "HorasReales", required = "", type = "text", value = proyecto.HorasReales, min = "0", max = "1000000" })<br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="HorasAnalisis">Horas de análisis</label>
+                @Html.TextBoxFor(model => proyecto.HorasAnalisis, htmlAttributes: new { @class = "campoProyecto", id = "HorasAnalisis", required = "", type = "text", value = proyecto.HorasAnalisis, min = "0", max = "1000000" })<br />
+            </div>
+        </div>
+
+        <!--FECHAS -->
+
+        <div class="fechas">
+            <div class="form-group">
+                <label for="FechaComienzo">Fecha comienzo</label>
+                @*<input type="date" id="FechaComienzo" name="FechaComienzo" value="@proyecto.FechaComienzo" class="campoProyecto" required /><br />*@
+                @Html.TextBoxFor(model => proyecto.FechaComienzo, "{0:yyyy-MM-dd}", htmlAttributes: new { @class = "campoProyecto", id = "FechaComienzo", required = "", type = "date", value = proyecto.FechaComienzo })<br />
+
+                @*@Html.TextBoxFor(model => proyecto.FechaComienzo, htmlAttributes: new { @class = "campoProyecto", id = "FechaComienzo", required = "", type = "date", value = proyecto.FechaComienzo })<br />*@
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="FechaInicio">Fecha inicio</label>
+                @{
+                    string[] FInicio = proyecto.FechaInicio.ToString().Split(' ');
+
+                }
+                @Html.TextBoxFor(model => proyecto.FechaInicio, "{0:yyyy-MM-dd}", htmlAttributes: new { @class = "campoProyecto", id = "FechaComienzo", type = "date", value = proyecto.FechaInicio })<br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="FechaDisenio">Fecha diseño</label>
+                @Html.TextBoxFor(model => proyecto.FechaDisenio, "{0:yyyy-MM-dd}", htmlAttributes: new { @class = "campoProyecto", id = "FechaComienzo", type = "date", value = proyecto.FechaDisenio })<br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="FechaValidacion">Fecha validación</label>
+                @Html.TextBoxFor(model => proyecto.FechaValidacion, "{0:yyyy-MM-dd}", htmlAttributes: new { @class = "campoProyecto", id = "FechaComienzo", type = "date", value = proyecto.FechaValidacion })<br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="FechaEnVivo">Fecha en vivo</label>
+                @Html.TextBoxFor(model => proyecto.FechaEnVivo, "{0:yyyy-MM-dd}", htmlAttributes: new { @class = "campoProyecto", id = "FechaComienzo", type = "date", value = proyecto.FechaEnVivo })<br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="FechaRecepcion">Fecha recepción</label>
+                @Html.TextBoxFor(model => proyecto.FechaRecepcion, "{0:yyyy-MM-dd}", htmlAttributes: new { @class = "campoProyecto", id = "FechaComienzo", type = "date", value = proyecto.FechaRecepcion })<br />
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="FechaFinEnd">Fecha fin</label>
+                @Html.TextBoxFor(model => proyecto.FechaFin, "{0:yyyy-MM-dd}", htmlAttributes: new { @class = "campoProyecto", id = "FechaComienzo", type = "date", value = proyecto.FechaFin })<br />
+            </div>
+        </div>
+
+        <div class="submit" id="anadirProyecto">
+            <input type="submit" value="Guardar" class="btn btn-primary pull-right" id="button-blue" onclick="crearProyecto()" />
+            <div class="ease"></div>
+        </div>
+    }
+</div>
+
+<script>
+    let fFin = document.getElementById("FechaFin")
+        var pedidoSeleccionado = '@proyecto.Fase';
+    $("#Pedido").val(pedidoSeleccionado);
+</script>

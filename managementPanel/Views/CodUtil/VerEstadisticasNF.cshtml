@@ -1,0 +1,302 @@
+﻿@using managementPanel.Models
+@*using Highsoft.Web.Mvc.Charts
+    @using Highsoft.Web.Mvc.Charts.Rendering;*@
+
+@{
+    ViewBag.Title = "VerEstadisticas";
+    List<Proyectos> proyectos = Model[0];
+    List<Usuarios> usuariosEquipos = Model[1];
+
+}
+
+<h2>Ver Estadisticas</h2>
+<div>
+    <input type="date" name="fechaInicioEst" id="fechaInicioEst" />
+</div>
+@if (((Usuarios)Session["usuario"]).Admin == true && proyectos.Count() == 0)
+{
+    <div>
+        <p>Usuarios de mis equipos:</p>
+        <select class="form-control" onchange="this.options[this.selectedIndex].value && (window.location.href = this.options[this.selectedIndex].value);">
+            @foreach (Usuarios u in usuariosEquipos)
+            {
+                <option value="@Url.Action("VerEstadisticas", new { usuarioId = u.IdUsuario})" )>@u.Usuario</option>
+
+            }
+        </select>
+    </div>
+}
+else
+{
+
+
+    <table>
+        <thead>
+        <th>Nombre del proyecto</th>
+        <th>Gráfica facturas</th>
+        </thead>
+        <tbody>
+            @foreach (Proyectos p in proyectos)
+            {
+                <tr>
+                    <td>@p.Nombre</td>
+                    <td><button id="btnFacturas" type="button" class="btn btn-dark" onclick="miBD()">Ver facturación</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    <div class="contenedor-grafica">
+
+    </div>
+
+    <script src="~/ContentManagement/Highcharts/code/highcharts.js"></script>
+    <script src="~/ContentManagement/Highcharts/code/modules/exporting.js"></script>
+    <script src="~/ContentManagement/Highcharts/code/modules/export-data.js"></script>
+    <script src="~/ContentManagement/Highcharts/code/modules/drilldown.js"></script>
+
+    <script>
+
+        var chart, options,usu;
+        //var fechaInicio = document.getElementsByName("fechaInicioEst")[0].value;
+        var valor1;
+        var fieldFecha = document.querySelector('#fechaInicioEst').value;
+        fieldFechaI.addEventListener('blur', function () {
+            //ViewBag.fechaInicio = fieldFechaI.value+"";
+            //valor1 = document.getElementById("fechaInicioEst").value;
+        });
+
+        function miBD() {
+            var fieldFecha = document.querySelector('#fechaInicioEst').value;
+            ViewBag.fechaInicio = fieldFecha;
+        $.ajax({
+            @*url: '@Url.Action("VerFacturacion", "Estadistica", new { usu= ViewBag.UsuSelect})'+ '&fechaInicio=' + fechaInicioEst,
+            url:'Url.Action("VerFacturacion", "Estadistica", new { usu = ViewBag.UsuSelect, fechaInicio=ViewBag.fechaInicio })',
+            url: '/Estadistica/VerFacturacion?usu=' + ViewBag.UsuSelect + '&fechaInicio=' + fechaInicioEst,
+            url: '/Estadistica/VerFacturacion?usu=' + ViewBag.UsuSelect +'&fechaInicio='+ViewBag.fechaInicio,
+            url: '/Estadistica/VerFacturacion?usu=${ViewBag.UsuSelect}&fechaInicio=${valor1}',
+            url: '@Url.Action("VerFacturacion", "Estadistica", new { usu = ViewBag.UsuSelect, fechaInicio=valor1 })', *@
+
+
+
+
+
+            //const fechaInicio = document.getElementById("fechaInicio").value;
+            //const fechaFin = document.getElementById("fechaFin").value;
+
+            //1
+            //const uri = '/Estadistica/VerFacturacion?usu=' + ViewBag.UsuSelect + '&fechaInicio=' + fechaInicio + '&fechaFin=' + fechaFin;
+            //2
+            //ViewBag.fechaInicio = fechaInicio + "";
+            //ViewBag.fechaFin = fechaFin+"";
+
+            @* $.ajax({
+                //url: uri,*@
+                @*url: '@Url.Action("VerFacturacion", "Estadistica", new { usu = ViewBag.UsuSelect, fechaInicio= ViewBag.fechaInicio, fechaFin= ViewBag.fechaFin })',
+                type: 'GET',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (misProyectos) {
+                    options.series[0].data = misProyectos;
+                    chart = new Highcharts.Chart(options);
+                    console.log(misProyectos);
+                },
+                error: function () {
+                    alert('No conseguido');
+                },
+            });*@
+
+            url: '@Url.Action("VerFacturacion", "Estadistica", new { usu = ViewBag.UsuSelect, fechaInicio=ViewBag.fechaInicio })',
+            type: 'GET',
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (misProyectos) {
+                options.series[0].data = misProyectos;
+                chart = new Highcharts.Chart(options);
+                console.log(misProyectos);
+            },
+            error: function () {
+                alert('No conseguido');
+            },
+        });
+
+        graficar();
+    };
+
+    function graficar() {
+
+        options = {
+            chart: {
+                renderTo: 'contenedor-grafica',
+                type: 'column'
+            },
+            title: {
+                text: 'Facturación'
+            },
+            xAxis: {
+                title: {
+                    text: 'Meses',
+                    categories: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Horas'
+                }
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 1,
+                    dataLabels: {
+                        enabled: true,
+                    }
+                }
+            },
+            tooltip: {
+                headerFormat: "<span style='font-size:11px'> {series.name}</span><br>",
+                pointFormat: "<span style='color:{point.color}'>{point.name}</span>: <b>{point.y:of}</b>"
+            },
+            series: [{
+                name: "Proyectos",
+                colorByPoint: true,
+                data: [],
+            }]
+        }
+
+
+
+        $.ajax({
+            url: '/Estadistica/VerFacturacion',
+            type: 'GET',
+            data: {
+                usu: usu,
+                fechaInicio: fechaInicio,
+                fechaFin: fechaFin
+            },
+            dataType: "text",
+            success: function (fechaHoras) {
+                var data = [];
+
+                for (var key in fechaHoras.d) {
+                    data.push({
+                        name: key,
+                        y: fechaHoras.d[key]
+                    })
+                }
+                Highcharts.chart('contenedor-grafica', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Facturación'
+                    },
+                    xAxis: {
+                        type: 'category'
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Ventas'
+                        }
+                    },
+                    series: [{
+                        name: 'Ventas',
+                        data: data
+                    }]
+                });
+            },
+            error: function () {
+                alert('No conseguido');
+            },
+        });
+    }
+    </script>
+
+
+
+
+    <script>
+
+        $(document).ready(function () {
+            $('#formGrafica').on('submit', function (event) {
+                event.preventDefault(); // Evitar el envío convencional del formulario
+                facturacion(); // Llamar a la función JS para enviar los datos al servidor
+            });
+        });
+
+        //var chart = null;
+        var chart = null;
+        function facturacion() {
+
+            // Obtener los valores del formulario
+            const fechaInicio = $('#fechaInicio').val();
+            const fechaFin = $('#fechaFin').val();
+            const usu = $('#idUsu').val();
+
+            $.ajax({
+                url: '/Estadistica/VerFacturacion',
+                type: 'GET',
+                data: {
+                    usu: usu,
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin
+                },
+                dataType: "text",
+
+                success: function (fechaHoras) {
+                    var data = [];
+
+                    for (var key in fechaHoras.d) {
+                        data.push({
+                            name: key,
+                            y: fechaHoras.d[key]
+                        })
+                    }
+                    //chart = new Highcharts.chart('contenedor-grafica', {
+
+                    /*Highcharts.chart('contenedor-grafica', {
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Facturación'
+                        },
+                        xAxis: {
+                            type: 'category'
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Horas'
+                            }
+                        },
+                        series: [{
+                            name: 'Proyectos',
+                            data: data
+                        }]
+                    });*/
+
+                    chart = new Chart('contenedor-grafica', {
+
+                        type: 'column',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function () {
+                    alert('No conseguido');
+                },
+            });
+
+            // Devolver false para evitar que el formulario se envíe de forma convencional
+            return false;
+        }
+    </script>
+}
+

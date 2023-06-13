@@ -1,0 +1,119 @@
+﻿
+@using managementPanel.Models
+
+@model List<managementPanel.Models.Usuarios>
+
+@{
+    ViewBag.Title = "Listar Usuarios";
+}
+
+
+<h2>ListarUsuarios</h2>
+
+<div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Equipo</th>
+                <th>Usuario</th>
+                <th>Contraseña</th>
+                <th>Rol</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody id="misUsuarios">
+
+            @foreach (var usuario in Model)
+            {
+                <tr id=@usuario.Usuario>
+                    <td>@usuario.Nombre</td>
+                    <td>@usuario.Apellidos</td>
+                    <td>@usuario.Equipos</td>
+                    <td>@usuario.Usuario</td>
+                    <td>@usuario.Contrasenna</td>
+                    <td>@usuario.Admin</td>
+
+                    <td>
+                        @Ajax.ActionLink("Editar AJAX", "Editar", "Usuario", new { usuarioSesion = @usuario.IdUsuario }, new AjaxOptions()
+                        {
+                            HttpMethod = "GET",
+                            InsertionMode = InsertionMode.Replace,
+                            UpdateTargetId = "ediccionUsu"
+                         }, new { @class = "btn btn-secondary" })
+                    </td>
+
+                    <td>
+                        @Ajax.ActionLink("Eliminar AJAX", "Eliminar", "Usuario", new { usuarioSesion = @usuario.IdUsuario }, new AjaxOptions()
+                           {
+                               HttpMethod = "GET",
+                               InsertionMode = InsertionMode.Replace,
+                               UpdateTargetId = "misUsuarios"
+                           }, new { @class = "btn btn-secondary" })
+                    </td>
+
+                    <td><button id="Editar" type="button" class="btn btn-primary" onclick="aniadirEditar('@usuario.IdUsuario')">Editar JS</button></td>
+
+                    <td><button id="Eliminar" type="button" class="btn btn-danger" onclick="javascript:EliminarUsu('@usuario.IdUsuario')">Eliminar JS</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="ediccionUsu">
+
+</div>
+
+@section scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+}
+
+
+<script>
+
+    function aniadirEditar(parametro)
+    {
+        //elimino el comportamiento por defecto del enlace
+        //event.preventDefault();
+
+        var usuarioSesion = parametro;
+
+        $.ajax({
+            url: '/Usuario/Editar',
+            data: JSON.stringify(usuarioSesion),
+            type: 'GET',
+            success: function (resultado) {
+                $('#ediccionUsu').html(resultado);
+            },
+            error: function () {
+                alert('Error al cargar la vista parcial');
+            },
+            contentType: 'application/json'
+        });
+    };
+
+    function EliminarUsu(parametro)
+    {
+        //elimino el comportamiento por defecto del enlace
+        //event.preventDefault();
+
+        var uri = '@Url.Action("Eliminar", "Usuario")';
+        var usuarioSesion = parametro;
+        $.ajax({
+            url: uri,
+            data: JSON.stringify(usuarioSesion),
+            type: 'POST',
+            success: function exito(data) {
+                $("#misUsuarios").html(data);
+            },
+            error: function () {
+                alert('Error al cargar la vista parcial');
+            },
+            contentType: 'application/json'
+        });
+    };
+</script>

@@ -1,0 +1,111 @@
+﻿@using managementPanel.Models
+@{
+    ViewBag.Title = "Editar";
+    List<Equipos> dataEquipos = Model[0];
+    Usuarios usuario = Model[1];
+    int page = Model[2];
+}
+
+<h2 id="tituloInsertarEquipo">Editar a @usuario.Usuario</h2>
+
+<div id="containerRegistrar">
+    <div id="divAnadirEquipo">
+        <a href="@Url.Action("ListarUsuarios", "Usuario",  new {})" class="cruz"><span class="material-symbols-outlined">close</span></a>
+        @using (Html.BeginForm("Editar", "Usuario", FormMethod.Post, htmlAttributes: new { id = "form1" }))
+        {
+            @Html.HiddenFor(model => page)
+            @Html.HiddenFor(model => usuario.IdUsuario)
+            <div class="form-group">
+                <label for="Nombre">Nombre</label>
+                @Html.TextBoxFor(model => usuario.Nombre, htmlAttributes: new { @class = "form-control", id = "Nombre", value = usuario.Nombre, required = "" })<br />
+            </div>
+
+            <div class="form-group">
+                <label for="Apellidos">Apellidos</label>
+                @Html.TextBoxFor(model => usuario.Apellidos, htmlAttributes: new { @class = "form-control", id = "Apellidos", value = usuario.Apellidos, required = "" })<br />
+            </div>
+
+            if (((Usuarios)Session["usuario"]).Usuario.Equals("admin"))
+            {
+                <div class="form-group">
+                    <label for="Equipo">Nombre de los equipos</label>
+                    <br>
+                    <select class="form-control" name="equiposId" multiple="">
+                        <!--Para introducir el atributo value y salga seleccionado en la lista-->
+                        <option value=null>SIN EQUIPO</option>
+                        @if (usuario.Equipos.Count == 0)
+                        {
+                            foreach (Equipos e in dataEquipos)
+                            {
+                                <option value=@e.IdEquipo> @e.Nombre</option>
+                            }
+                        }
+                        else
+                        {
+                            foreach (Equipos equipoUsu in usuario.Equipos)
+                            {
+                                if (dataEquipos.Contains(equipoUsu))
+                                {
+                                    <option value=@equipoUsu.IdEquipo selected> @equipoUsu.Nombre </option>
+                                }
+                            }
+                            foreach (Equipos e in dataEquipos)
+                            {
+                                if (!usuario.Equipos.Contains(e))
+                                {
+                                    <option value=@e.IdEquipo> @e.Nombre </option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+            }
+            <div class="form-group">
+                <label for="Usuario">Usuario</label>
+                @Html.TextBoxFor(model => usuario.Usuario, htmlAttributes: new { @class = "form-control", id = "UsuarioControlar2" })<br />
+                <span id="error2" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Contrasenna">Escriba la nueva contraseña</label>
+                @Html.PasswordFor(model => usuario.Contrasenna, htmlAttributes: new { @class = "form-control", id = "Contrasenna", value = usuario.Contrasenna, required = "" })<br />
+            </div>
+            if (((Usuarios)Session["usuario"]).Usuario.Equals("admin"))
+            {
+                <label for="JefeProyecto">Perfil:</label>
+                <select class="form-control" name="rol" id="selectJefeProyecto">
+                    @if (usuario.Admin == true)
+                    {
+                        <option value="Admin" selected> Admin</option>
+                    }
+                    else
+                    {
+                        <option value="Admin"> Admin</option>
+                    }
+                    @if (usuario.Admin == false)
+                    {
+                        <option value="Técnico" selected> Técnico</option>
+                    }
+                    else
+                    {
+                        <option value="Técnico"> Técnico</option>
+                    }
+                    @if (usuario.Consultor == true)
+                    {
+                        <option value="Consultor" selected> Consultor</option>
+                    }
+                    else
+                    {
+                        <option value="Consultor"> Consultor</option>
+                    }
+                </select>
+            }
+
+            <div class="submit">
+                <input type="submit" value="Modificar" id="btnEnviar" />
+                <div class="ease"></div>
+            </div>
+            <br>
+        }
+    </div>
+</div>

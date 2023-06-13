@@ -1,0 +1,112 @@
+﻿@using managementPanel.Models
+
+
+@{ 
+    List<string> nombresEquipos = Model[0];
+    Usuarios usuario = Model[1];
+}
+
+<h2>Editar a @usuario.Usuario</h2>
+
+<div>
+
+    <form class="form" method="post" onsubmit="Enviar()">
+
+        @Html.HiddenFor(model => usuario.IdUsuario)
+
+        <div class="form-group">
+            <label for="Nombre">Nombre</label>
+            <input name="Nombre" type="text" maxlength="100" required="" class="form-control" placeholder="Nombre" id="Nombre" value=@usuario.Nombre />
+        </div>
+
+        <div class="form-group">
+            <label for="Apellidos">Apellidos</label>
+            <input name="Apellidos" type="text" maxlength="100" required="" class="form-control" placeholder="Apellidos" id="Apellidos" value=@usuario.Apellidos />
+        </div>
+
+        <div class="form-group">
+            <label for="Equipo">Nombre de equipo</label>
+            <br>
+            <select name="Equipo">
+                <option value=@usuario.Equipo selected>@usuario.Equipo</option>
+                @foreach (String nom in @nombresEquipos)
+                {
+                    if (!@nom.Equals(@usuario.Equipo))
+                    {
+                        <option value=@nom>@nom</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="Usuario">Usuario</label>
+            <input name="Usuario" type="text" maxlength="100" required="" class="form-control" placeholder="Usuario" id="Usuario" value=@usuario.Usuario />
+        </div>
+
+        <div class="form-group">
+            <label for="Contrasenna">Escriba la nueva contraseña</label>
+            <input name="Contrasenna" type="password" maxlength="100" required="" class="form-control" placeholder="Contraseña" id="Contrasenna" value=@usuario.Contrasenna />
+        </div>
+
+
+        <fieldset class="form-group">
+            <legend>Admin: </legend>
+            <input type="radio" name="Admin" value="true" id="Admin" checked />Admin<br />
+            <input type="radio" name="Admin" value="false" id="Usuario normal" />Usuario normal<br />
+        </fieldset>
+
+        <div class="submit">
+            <input type="submit" value="Modificar" class="btn btn-primary pull-right" id="btnEnviar"/>
+            <div class="ease"></div>
+        </div>
+        <br>
+        <div class="submit">
+            <input type="reset" value="Borrar Campos" class="btn btn-danger pull-right" id="button-reset">
+            <div class="ease"></div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    /*document.addEventListener("DOMContentLoaded", function () {
+        var btnEnviar = document.querySelector("#btnEnviar");
+        btnEnviar.addEventListener("click", function () {
+
+            //CONTENIDO DE ENVIAR()
+        });
+    });*/
+
+    function Enviar() {
+        var uri = '@Url.Action("Editar", "Usuario")';
+        var usuario = {};
+
+        usuario = cargarUsuario(usuario);
+        $.ajax({
+            url: uri,
+            data: JSON.stringify(usuario),
+            type: 'POST',
+            contentType: 'application/json'
+        });
+    };
+
+
+    function cargarUsuario() {
+
+        usuario.IdUsuario = @usuario.IdUsuario;
+
+        usuario.Nombre = document.getElementById("Nombre").value;
+        usuario.Apellidos = document.getElementById("Apellidos").value;
+        usuario.Equipo = document.getElementById("Equipo").value;
+        usuario.Usuario = document.getElementById("Usuario").value;
+        usuario.Contrasenna = document.getElementById("Contrasenna").value;
+
+        if (document.getElementById('Admin').checked)
+            usuario.Admin = document.getElementById("Admin").value;
+        if (document.getElementById('Usuario normal').checked)
+            usuario.Admin = document.getElementById("Usuario normal").value;
+
+        return usuario;
+    };
+</script>

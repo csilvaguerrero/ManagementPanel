@@ -1,0 +1,40 @@
+﻿<div>
+    @foreach (var usuario in Model)
+    {
+        <tr id=@usuario.Usuario>
+            <!-- Prueba js - <td><button type="button" onclick="javascript:prueba()">maria</button></td>-->
+            <td>@usuario.Nombre</td>
+            <td>@usuario.Apellidos</td>
+            <td>
+                <ul>
+                    @foreach (managementPanel.Models.Equipos e in usuario.Equipos)
+                    {
+                        <li>@e.Nombre</li><br/>
+                    }
+                </ul>
+            </td>
+            <td>@usuario.Usuario</td>
+            <td>@usuario.Admin</td>
+
+            <td><a href="@Url.Action("verPerfil", "Usuario",  new { idUsuario = usuario.IdUsuario })" class="btn btn-info">Ver Perfil</a></td>
+
+            <td>
+                @Ajax.ActionLink("Editar", "Editar", "Usuario", new { usuarioSesion = @usuario.IdUsuario }, new AjaxOptions()
+                {
+                    HttpMethod = "GET",
+                    InsertionMode = InsertionMode.Replace,
+                    UpdateTargetId = "ediccionUsu"
+                 }, new { @class = "btn btn-primary" })
+            </td>
+
+            <td>
+                @Ajax.ActionLink("Eliminar", "Eliminar", "Usuario", new { usuarioSesion = @usuario.IdUsuario }, new AjaxOptions()
+                   {
+                      HttpMethod = "POST",
+                       InsertionMode = InsertionMode.Replace,
+                       UpdateTargetId = "misUsuarios"
+                   }, new { @class = "btn btn-danger", onclick = "eliminarToast()" })
+            </td>
+        </tr>
+    }
+</div>

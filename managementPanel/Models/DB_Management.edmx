@@ -1,0 +1,435 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DB_ManagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Equipos">
+          <Key>
+            <PropertyRef Name="IdEquipo" />
+          </Key>
+          <Property Name="IdEquipo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Departamento" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="EquiposDeUsuarios">
+          <Key>
+            <PropertyRef Name="IdUsuario" />
+            <PropertyRef Name="IdEquipo" />
+          </Key>
+          <Property Name="IdUsuario" Type="int" Nullable="false" />
+          <Property Name="IdEquipo" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Proyectos">
+          <Key>
+            <PropertyRef Name="Codigo" />
+          </Key>
+          <Property Name="Codigo" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Completado" Type="int" Nullable="false" />
+          <Property Name="FechaComienzo" Type="date" Nullable="false" />
+          <Property Name="Fase" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="HorasNormales" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="HorasEspeciales" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="HorasReales" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="HorasAnalisis" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="HorasDesarrollo" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="FechaInicio" Type="date" />
+          <Property Name="FechaDisenio" Type="date" />
+          <Property Name="FechaValidacion" Type="date" />
+          <Property Name="FechaEnVivo" Type="date" />
+          <Property Name="FechaRecepcion" Type="date" />
+          <Property Name="FechaFin" Type="date" />
+          <Property Name="Cliente" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="IdUsuario" Type="int" />
+          <Property Name="JefeProyecto" Type="varchar" MaxLength="200" />
+          <Property Name="Consultor" Type="varchar" MaxLength="200" />
+          <Property Name="CodigoOferta" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Replanificaciones" Type="int" />
+          <Property Name="Incidencias" Type="int" />
+          <Property Name="Desviacion" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="DesviacionDesarrollo" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="DesviacionAnalisis" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tareas">
+          <Key>
+            <PropertyRef Name="IdTarea" />
+          </Key>
+          <Property Name="IdTarea" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdUsuario" Type="int" Nullable="false" />
+          <Property Name="IdProyecto" Type="varchar" MaxLength="100" />
+          <Property Name="Titulo" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Horas" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="255" />
+          <Property Name="FechaFin" Type="date" />
+          <Property Name="Estado" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Usuarios">
+          <Key>
+            <PropertyRef Name="IdUsuario" />
+          </Key>
+          <Property Name="IdUsuario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Apellidos" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Usuario" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Contrasenna" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="FechaInicioVacaciones" Type="date" />
+          <Property Name="FechaFinVacaciones" Type="date" />
+          <Property Name="Admin" Type="bit" />
+          <Property Name="Consultor" Type="bit" />
+          <Property Name="Vacaciones" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_equipos">
+          <End Role="Equipos" Type="Self.Equipos" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EquiposDeUsuarios" Type="Self.EquiposDeUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Equipos">
+              <PropertyRef Name="IdEquipo" />
+            </Principal>
+            <Dependent Role="EquiposDeUsuarios">
+              <PropertyRef Name="IdEquipo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_idUsuario">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IdUsuario" />
+            </Principal>
+            <Dependent Role="Proyectos">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_tareas_IdProyecto">
+          <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="0..1" />
+          <End Role="Tareas" Type="Self.Tareas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Proyectos">
+              <PropertyRef Name="Codigo" />
+            </Principal>
+            <Dependent Role="Tareas">
+              <PropertyRef Name="IdProyecto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_tareas_idUsuario">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tareas" Type="Self.Tareas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IdUsuario" />
+            </Principal>
+            <Dependent Role="Tareas">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_usuarios">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EquiposDeUsuarios" Type="Self.EquiposDeUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IdUsuario" />
+            </Principal>
+            <Dependent Role="EquiposDeUsuarios">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DB_ManagementModelStoreContainer">
+          <EntitySet Name="Equipos" EntityType="Self.Equipos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EquiposDeUsuarios" EntityType="Self.EquiposDeUsuarios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Proyectos" EntityType="Self.Proyectos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tareas" EntityType="Self.Tareas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_equipos" Association="Self.fk_equipos">
+            <End Role="Equipos" EntitySet="Equipos" />
+            <End Role="EquiposDeUsuarios" EntitySet="EquiposDeUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="fk_idUsuario" Association="Self.fk_idUsuario">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Proyectos" EntitySet="Proyectos" />
+          </AssociationSet>
+          <AssociationSet Name="fk_tareas_IdProyecto" Association="Self.fk_tareas_IdProyecto">
+            <End Role="Proyectos" EntitySet="Proyectos" />
+            <End Role="Tareas" EntitySet="Tareas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_tareas_idUsuario" Association="Self.fk_tareas_idUsuario">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Tareas" EntitySet="Tareas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_usuarios" Association="Self.fk_usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="EquiposDeUsuarios" EntitySet="EquiposDeUsuarios" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DB_ManagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Equipos">
+          <Key>
+            <PropertyRef Name="IdEquipo" />
+          </Key>
+          <Property Name="IdEquipo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Departamento" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Descripcion" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Usuarios" Relationship="Self.EquiposDeUsuarios" FromRole="Equipos" ToRole="Usuarios" />
+        </EntityType>
+        <EntityType Name="Proyectos">
+          <Key>
+            <PropertyRef Name="Codigo" />
+          </Key>
+          <Property Name="Codigo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Nombre" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Completado" Type="Int32" Nullable="false" />
+          <Property Name="FechaComienzo" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Fase" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="HorasNormales" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="HorasEspeciales" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="HorasReales" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="HorasAnalisis" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="HorasDesarrollo" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="FechaInicio" Type="DateTime" Precision="0" />
+          <Property Name="FechaDisenio" Type="DateTime" Precision="0" />
+          <Property Name="FechaValidacion" Type="DateTime" Precision="0" />
+          <Property Name="FechaEnVivo" Type="DateTime" Precision="0" />
+          <Property Name="FechaRecepcion" Type="DateTime" Precision="0" />
+          <Property Name="FechaFin" Type="DateTime" Precision="0" />
+          <Property Name="Cliente" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IdUsuario" Type="Int32" />
+          <Property Name="JefeProyecto" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Consultor" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CodigoOferta" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Replanificaciones" Type="Int32" />
+          <Property Name="Incidencias" Type="Int32" />
+          <Property Name="Desviacion" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="DesviacionDesarrollo" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="DesviacionAnalisis" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Usuarios" Relationship="Self.fk_idUsuario" FromRole="Proyectos" ToRole="Usuarios" />
+          <NavigationProperty Name="Tareas" Relationship="Self.fk_tareas_IdProyecto" FromRole="Proyectos" ToRole="Tareas" />
+        </EntityType>
+        <EntityType Name="Tareas">
+          <Key>
+            <PropertyRef Name="IdTarea" />
+          </Key>
+          <Property Name="IdTarea" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdUsuario" Type="Int32" Nullable="false" />
+          <Property Name="IdProyecto" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Titulo" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Horas" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Descripcion" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="FechaFin" Type="DateTime" Precision="0" />
+          <Property Name="Estado" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Proyectos" Relationship="Self.fk_tareas_IdProyecto" FromRole="Tareas" ToRole="Proyectos" />
+          <NavigationProperty Name="Usuarios" Relationship="Self.fk_tareas_idUsuario" FromRole="Tareas" ToRole="Usuarios" />
+        </EntityType>
+        <EntityType Name="Usuarios">
+          <Key>
+            <PropertyRef Name="IdUsuario" />
+          </Key>
+          <Property Name="IdUsuario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Apellidos" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Usuario" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Contrasenna" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FechaInicioVacaciones" Type="DateTime" Precision="0" />
+          <Property Name="FechaFinVacaciones" Type="DateTime" Precision="0" />
+          <Property Name="Admin" Type="Boolean" />
+          <Property Name="Consultor" Type="Boolean" />
+          <Property Name="Vacaciones" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Proyectos" Relationship="Self.fk_idUsuario" FromRole="Usuarios" ToRole="Proyectos" />
+          <NavigationProperty Name="Tareas" Relationship="Self.fk_tareas_idUsuario" FromRole="Usuarios" ToRole="Tareas" />
+          <NavigationProperty Name="Equipos" Relationship="Self.EquiposDeUsuarios" FromRole="Usuarios" ToRole="Equipos" />
+        </EntityType>
+        <Association Name="fk_idUsuario">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IdUsuario" />
+            </Principal>
+            <Dependent Role="Proyectos">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_tareas_IdProyecto">
+          <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="0..1" />
+          <End Role="Tareas" Type="Self.Tareas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Proyectos">
+              <PropertyRef Name="Codigo" />
+            </Principal>
+            <Dependent Role="Tareas">
+              <PropertyRef Name="IdProyecto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_tareas_idUsuario">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tareas" Type="Self.Tareas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IdUsuario" />
+            </Principal>
+            <Dependent Role="Tareas">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EquiposDeUsuarios">
+          <End Role="Equipos" Type="Self.Equipos" Multiplicity="*" />
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="DB_ManagementEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Equipos" EntityType="Self.Equipos" />
+          <EntitySet Name="Proyectos" EntityType="Self.Proyectos" />
+          <EntitySet Name="Tareas" EntityType="Self.Tareas" />
+          <EntitySet Name="Usuarios" EntityType="Self.Usuarios" />
+          <AssociationSet Name="fk_idUsuario" Association="Self.fk_idUsuario">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Proyectos" EntitySet="Proyectos" />
+          </AssociationSet>
+          <AssociationSet Name="fk_tareas_IdProyecto" Association="Self.fk_tareas_IdProyecto">
+            <End Role="Proyectos" EntitySet="Proyectos" />
+            <End Role="Tareas" EntitySet="Tareas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_tareas_idUsuario" Association="Self.fk_tareas_idUsuario">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Tareas" EntitySet="Tareas" />
+          </AssociationSet>
+          <AssociationSet Name="EquiposDeUsuarios" Association="Self.EquiposDeUsuarios">
+            <End Role="Equipos" EntitySet="Equipos" />
+            <End Role="Usuarios" EntitySet="Usuarios" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DB_ManagementModelStoreContainer" CdmEntityContainer="DB_ManagementEntities">
+          <EntitySetMapping Name="Equipos">
+            <EntityTypeMapping TypeName="DB_ManagementModel.Equipos">
+              <MappingFragment StoreEntitySet="Equipos">
+                <ScalarProperty Name="IdEquipo" ColumnName="IdEquipo" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Departamento" ColumnName="Departamento" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Proyectos">
+            <EntityTypeMapping TypeName="DB_ManagementModel.Proyectos">
+              <MappingFragment StoreEntitySet="Proyectos">
+                <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Completado" ColumnName="Completado" />
+                <ScalarProperty Name="FechaComienzo" ColumnName="FechaComienzo" />
+                <ScalarProperty Name="Fase" ColumnName="Fase" />
+                <ScalarProperty Name="HorasNormales" ColumnName="HorasNormales" />
+                <ScalarProperty Name="HorasEspeciales" ColumnName="HorasEspeciales" />
+                <ScalarProperty Name="HorasReales" ColumnName="HorasReales" />
+                <ScalarProperty Name="HorasAnalisis" ColumnName="HorasAnalisis" />
+                <ScalarProperty Name="HorasDesarrollo" ColumnName="HorasDesarrollo" />
+                <ScalarProperty Name="FechaInicio" ColumnName="FechaInicio" />
+                <ScalarProperty Name="FechaDisenio" ColumnName="FechaDisenio" />
+                <ScalarProperty Name="FechaValidacion" ColumnName="FechaValidacion" />
+                <ScalarProperty Name="FechaEnVivo" ColumnName="FechaEnVivo" />
+                <ScalarProperty Name="FechaRecepcion" ColumnName="FechaRecepcion" />
+                <ScalarProperty Name="FechaFin" ColumnName="FechaFin" />
+                <ScalarProperty Name="Cliente" ColumnName="Cliente" />
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+                <ScalarProperty Name="JefeProyecto" ColumnName="JefeProyecto" />
+                <ScalarProperty Name="Consultor" ColumnName="Consultor" />
+                <ScalarProperty Name="CodigoOferta" ColumnName="CodigoOferta" />
+                <ScalarProperty Name="Replanificaciones" ColumnName="Replanificaciones" />
+                <ScalarProperty Name="Incidencias" ColumnName="Incidencias" />
+                <ScalarProperty Name="Desviacion" ColumnName="Desviacion" />
+                <ScalarProperty Name="DesviacionDesarrollo" ColumnName="DesviacionDesarrollo" />
+                <ScalarProperty Name="DesviacionAnalisis" ColumnName="DesviacionAnalisis" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tareas">
+            <EntityTypeMapping TypeName="DB_ManagementModel.Tareas">
+              <MappingFragment StoreEntitySet="Tareas">
+                <ScalarProperty Name="IdTarea" ColumnName="IdTarea" />
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+                <ScalarProperty Name="IdProyecto" ColumnName="IdProyecto" />
+                <ScalarProperty Name="Titulo" ColumnName="Titulo" />
+                <ScalarProperty Name="Horas" ColumnName="Horas" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="FechaFin" ColumnName="FechaFin" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usuarios">
+            <EntityTypeMapping TypeName="DB_ManagementModel.Usuarios">
+              <MappingFragment StoreEntitySet="Usuarios">
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Apellidos" ColumnName="Apellidos" />
+                <ScalarProperty Name="Usuario" ColumnName="Usuario" />
+                <ScalarProperty Name="Contrasenna" ColumnName="Contrasenna" />
+                <ScalarProperty Name="FechaInicioVacaciones" ColumnName="FechaInicioVacaciones" />
+                <ScalarProperty Name="FechaFinVacaciones" ColumnName="FechaFinVacaciones" />
+                <ScalarProperty Name="Admin" ColumnName="Admin" />
+                <ScalarProperty Name="Consultor" ColumnName="Consultor" />
+                <ScalarProperty Name="Vacaciones" ColumnName="Vacaciones" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="EquiposDeUsuarios" TypeName="DB_ManagementModel.EquiposDeUsuarios" StoreEntitySet="EquiposDeUsuarios">
+            <EndProperty Name="Equipos">
+              <ScalarProperty Name="IdEquipo" ColumnName="IdEquipo" />
+            </EndProperty>
+            <EndProperty Name="Usuarios">
+              <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,21 @@
+﻿@{
+    int codigo = Model;
+}
+
+@if (codigo == 404)
+{
+    <h2 id="error404" class="noUsu">
+        Ups, creo que no existe ese recurso.
+        <span id="codigoError">Error 404</span>
+    </h2>
+
+}
+@*else if (codigo == 500)
+    {
+        <h2 id="error404" class="noUsu">
+            No tienes acceso a este recurso.
+            <span id="codigoError">Error 404</span>
+        </h2>
+    }*@
+
+

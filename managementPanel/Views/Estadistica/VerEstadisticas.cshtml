@@ -1,0 +1,322 @@
+﻿@using managementPanel.Models
+@using Newtonsoft.Json;
+@using System.Globalization;
+
+
+@{
+    ViewBag.Title = "VerEstadisticas";
+    List<Proyectos> proyectos = (List<Proyectos>)Model[0];
+    List<Usuarios> usuarios = (List<Usuarios>)Model[1];
+    List<FacturacionPorMes> facturacionPorMes = (List<FacturacionPorMes>)Model[2];
+    List<FacturacionPorMes> facturacionRPorMes = (List<FacturacionPorMes>)Model[3];
+    decimal facturacionTacabados = (decimal)Model[4];
+    decimal facturacionT = (decimal)Model[5];
+
+    DB_ManagementEntities contexto = new DB_ManagementEntities();
+
+    var id = ViewBag.id ?? ((Usuarios)Session["usuario"]).IdUsuario;
+
+    foreach (Usuarios u in contexto.Usuarios)
+    {
+        if (u.IdUsuario == id)
+        {
+            var nombreUsuario = u.Nombre;
+        }
+        else
+        {
+            var nombreUsuario = "";
+        }
+    }
+
+
+
+}
+
+<script src="~/ContentManagement/Js/jspfd.debug.js" type="text/javascript"></script>
+<script src="~/Scripts/chart.js"></script>
+<script src="~/Scripts/chart.min.js"></script>
+
+<script>
+    var formData;
+    function enviarFormulario() {
+
+        formData = $('form.cajaFiltros').serialize();
+
+        $.ajax({
+            url: '/Estadistica/VerEstadisticasf?responseData=1',
+            type: 'GET',
+            data: formData,
+            success: function (responseData) {
+                var jsonData = responseData;
+                var queryString = $.param(jsonData); // Convertir el objeto JSON en una cadena de consulta
+                var url = '/Estadistica/VerEstadisticasf?responseData=2&' + queryString;
+                window.location.replace(url); // Redirigir a la nueva URL
+            }
+        });
+    }
+</script>
+
+<form method="post" class="cajaFiltros">
+    <div class="filtros">
+        @if (((Usuarios)Session["usuario"]).Admin == true)
+        {
+            <label>Usuarios: </label>
+            <select class="form-control" name="usuarioId" onchange="enviarFormulario()">
+                <option disabled selected>Elige un usuario</option>
+                @foreach (Usuarios u in usuarios)
+                {
+                    if (!u.Usuario.Equals("admin"))
+                    {
+                        <option value="@u.IdUsuario" @(u.IdUsuario == ViewBag.id ? "selected" : "")>@u.Usuario</option>
+                        if (u.IdUsuario == ViewBag.id)
+                        {
+                            ViewBag.usuario = u.Usuario;
+                        }
+                    }
+                }
+            </select>
+        }
+        else
+        {
+            ViewBag.usuario = ((Usuarios)Session["usuario"]).Usuario;
+        }
+
+    </div>
+    <div class="filtros">
+        <label>Fecha de inicio:</label>
+        <input class="form-control" type="date" name="fechaDesde" value="@ViewBag.desde.ToString("yyyy-MM-dd")">
+    </div>
+    <div class="filtros">
+        <label>Fecha actual:</label>
+        <input class="form-control" type="date" name="fechaHoy" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly>
+    </div>
+    <div class="filtros">
+        <label>Fecha de fin:</label>
+        <input class="form-control" type="date" name="fechaHasta" value="@ViewBag.hasta.ToString("yyyy-MM-dd")"><br />
+    </div>
+    <button type="submit" id="botonBuscar" class="botonFiltrar">
+        <span class="material-icons-outlined">search</span>
+    </button>
+</form>
+
+
+@if (proyectos.Count() > 0)
+{
+
+    <button type="submit" id="btnDescargar" onclick="descargarPDF('@facturacionTacabados', '@facturacionT', '@ViewBag.usuario', '@ViewBag.desde.ToString("dd/MM/yyyy")', '@ViewBag.hasta.ToString("dd/MM/yyyy")')">
+        Descargar PDF  <span class="verTablero material-icons-outlined">picture_as_pdf</span>
+    </button>
+    <h2 class="titulosEstadistiacas">Desviaciones</h2>
+    <div class="cajaGraficos">
+        <canvas id="desviacion" width="300" height="70"></canvas>
+    </div>
+
+    <h2 class="titulosEstadistiacas">Facturación por mes</h2>
+    <div class="cajaGraficos">
+        <canvas id="facturacion" width="300" height="70"></canvas>
+    </div>
+    <p id="parrafoHoras">Horas totales facturadas: <span>@facturacionTacabados h</span></p>
+    <br />
+
+    <h2 class="titulosEstadistiacas">Facturación por mes restante</h2>
+    <div class="cajaGraficos">
+        <canvas id="facturacionR" width="300" height="70"></canvas>
+    </div>
+    <p id="parrafoHoras">Horas totales sin facturar: <span>@facturacionT h</span></p>
+    <br />
+
+    <h2 class="titulosEstadistiacas">Incidencias y Replanificaciones</h2>
+    <div class="cajaGraficos">
+        <canvas id="incidencias" width="300" height="70"></canvas>
+    </div>
+
+    <script>
+    var datosGraficoD = {
+        labels: [@Html.Raw(string.Join(",", proyectos.Select(x => "'" + x.Nombre + "'")))],
+        datasets: [{
+            label: 'Desviación Proyecto',
+            data: [@Html.Raw(string.Join(",", proyectos.Select(x => x.Desviacion.ToString("0.00", CultureInfo.InvariantCulture))))],
+            fill: false,
+            borderColor: 'red', 
+            tension: 0.2,
+            radius: 7
+        },
+        {
+            label: 'Desviación Analisis',
+            data: [@Html.Raw(string.Join(",", proyectos.Select(x => x.DesviacionAnalisis.ToString("0.00", CultureInfo.InvariantCulture))))],
+            fill: false,
+            borderColor: 'blue',
+            tension: 0.2,
+            radius: 7
+            },
+        {
+            label: 'Desviación Desarrollo',
+            data: [@Html.Raw(string.Join(",", proyectos.Select(x => x.DesviacionDesarrollo.ToString("0.00", CultureInfo.InvariantCulture))))],
+            fill: false,
+            borderColor: 'green',
+            tension: 0.2,
+            radius: 7
+        }]
+    };
+
+    var graficoDesviacion = document.getElementById('desviacion').getContext('2d');
+
+    var chartDesviacion = new Chart(graficoDesviacion, {
+        type: 'line',
+        data: datosGraficoD,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+
+    var datosGraficoF = {
+            labels: [@Html.Raw(string.Join(",", facturacionPorMes.Select(x => "'" + x.Mes.ToString() + "/" + x.Año.ToString() + "'")))],
+            datasets: [{
+                label: 'Horas facturadas',
+                data: [@Html.Raw(string.Join(",", facturacionPorMes.Select(x => x.HorasFacturadas.ToString("0.00", CultureInfo.InvariantCulture))))],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        };
+
+    var graficoFacturacion = document.getElementById('facturacion').getContext('2d');
+
+    var chartFacturacion = new Chart(graficoFacturacion, {
+        type: 'bar',
+        data: datosGraficoF,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    var datosGraficoR = {
+        labels: [@Html.Raw(string.Join(",", facturacionRPorMes.Select(x => "'" + x.Mes.ToString() + "/" + x.Año.ToString() + "'")))],
+        datasets: [{
+            label: 'Horas por facturar',
+            data: [@Html.Raw(string.Join(",", facturacionRPorMes.Select(x => x.HorasFacturadas.ToString("0.00", CultureInfo.InvariantCulture))))],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    var graficoFacturacionR = document.getElementById('facturacionR').getContext('2d');
+
+    var chartFacturacionR = new Chart(graficoFacturacionR, {
+        type: 'bar',
+        data: datosGraficoR,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+   var datosGraficoI = {
+        labels: [@Html.Raw(string.Join(",", proyectos.Select(x => "'" + x.Nombre + "'")))],
+        datasets: [{
+            label: 'Número de incidencias',
+            data: [@Html.Raw(string.Join(",", proyectos.Select(x => x.Incidencias)))],
+            fill: false,
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(255, 99, 132, 1)',
+            tension: 0.2,
+            radius: 7
+        },
+        {
+            label: 'Numero de Replanificaciones',
+            data: [@Html.Raw(string.Join(",", proyectos.Select(x => x.Replanificaciones)))],
+            fill: false,
+            borderColor: 'rgba(91, 53, 244, 1)',
+            borderColor: 'rgba(91, 53, 244, 1)',
+            backgroundColor: 'rgba(91, 53, 244, 1)',
+            pointBackgroundColor: 'rgba(91, 53, 244, 1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(91, 53, 244, 1)',
+            tension: 0.2,
+            radius: 7
+        }]
+        };
+
+    var graficoIncidencias = document.getElementById('incidencias').getContext('2d');
+
+    var chartIncidencias = new Chart(graficoIncidencias, {
+        type: 'line',
+        data: datosGraficoI,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    /*function descargarPDF(usuario) {
+
+        var doc = new jsPDF({
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        doc.text("Desviaciones", 110, 8, "center");
+        doc.addImage(chartDesviacion.canvas.toDataURL(), 'png', 5, 10, 200, 60);
+        doc.text("Facturacion por mes", 110, 75, "center");
+        doc.addImage(chartFacturacion.canvas.toDataURL(), 'png', 5, 77, 200, 60);
+        doc.text("Facturacion restante por mes", 110, 142, "center");
+        doc.addImage(chartFacturacionR.canvas.toDataURL(), 'png', 5, 144, 200, 60);
+        doc.text("Incidencias y replanificaciones", 110, 209, "center");
+        doc.addImage(chartIncidencias.canvas.toDataURL(), 'png', 5, 211, 200, 60);
+
+        doc.save('estadisticas-'+usuario+'.pdf');
+        }*/
+
+        function descargarPDF(facturacionTacabados, facturacionT, usuario, desde, hasta) {
+            d = new Date();
+
+            var doc = new jsPDF({
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            doc.text("Desviaciones", 110, 8, "center");
+            doc.addImage(chartDesviacion.canvas.toDataURL(), 'png', 5, 10, 200, 60);
+            doc.text("Facturación por mes (de " + desde + " a " + d.toLocaleDateString() + ")", 110, 75, "center");
+            doc.addImage(chartFacturacion.canvas.toDataURL(), 'png', 5, 77, 200, 60);
+            doc.text("Horas totales facturadas: " + facturacionTacabados, 110, 143, "center");
+            doc.text("Facturación restante por mes (de " + d.toLocaleDateString() + " a " + hasta + ")", 110, 153, "center");
+            doc.addImage(chartFacturacionR.canvas.toDataURL(), 'png', 5, 156, 200, 60);
+            doc.text("Horas totales sin facturar: " + facturacionT, 110, 220, "center");
+            doc.text("Incidencias y replanificaciones", 110, 229, "center");
+            doc.addImage(chartIncidencias.canvas.toDataURL(), 'png', 5, 232, 200, 60);
+
+            doc.save('estadisticas-' + usuario + '.pdf');
+        }
+    </script>
+}
+else
+{
+    <div id="mensaje">
+        <span>No hay resultados con estas características.</span>
+    </div>
+}

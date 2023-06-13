@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewBag.Title = "Insertar";
+}
+
+<h2>Insertar</h2>
+
+<div>
+    <form class="form" method="post">
+
+        <div class="form-group">
+            <label for="Nombre">Nombre</label>
+            <input name="Nombre" type="text" maxlength="100" required="" class="form-control" placeholder="Nombre" id="Nombre" />
+        </div>
+
+        <div class="form-group">
+            <label for="Apellidos">Apellidos</label>
+            <input name="Apellidos" type="text" maxlength="100" required="" class="form-control" placeholder="Apellidos" id="Apellidos" />
+        </div>
+
+        <div class="form-group">
+            <label for="Equipo">Nombre de equipo</label>
+            <br>
+            <select name="Equipo">
+                <option value="Equipo1" selected>Equipo 1</option>
+                @foreach (String nom in Model)
+                {
+                    if (!@nom.Equals("Equipo1"))
+                    {
+                        <option value=@nom>@nom</option>
+                    }
+
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="Usuario">Nombre de usuario</label>
+            <input name="Usuario" type="text" maxlength="100" required="" class="form-control" placeholder="Usuario" id="Usuario" />
+        </div>
+
+
+        <div class="form-group">
+            <label for="Contrasenna">Escriba la contraseña</label>
+            <input name="Contrasenna" type="password" maxlength="100" required="" class="form-control" placeholder="Contraseña" id="Contrasenna" />
+        </div>
+
+
+        <fieldset class="form-group">
+            <legend>Admin: </legend>
+            <input type="radio" name="Admin" value="true" checked />Admin<br />
+            <input type="radio" name="Admin" value="false" />Usuario normal<br />
+        </fieldset>
+
+        <div class="submit">
+            <input type="submit" value="Registrar" class="btn btn-primary pull-right" id="button-blue" />
+            <div class="ease"></div>
+        </div>
+        <br>
+        <div class="submit">
+            <input type="reset" value="Borrar Campos" class="btn btn-danger pull-right" id="button-reset">
+            <div class="ease"></div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    function validarFormulario() {
+        // validaciones
+        if (document.getElementById("Nombre").value === "") {
+            alert("El campo nombre es obligatorio.");
+            return false;
+        }
+        if (document.getElementById("Usuario").value === "") {
+            alert("El campo usuario es obligatorio.");
+            return false;
+        }
+        return true;
+    }
+</script>

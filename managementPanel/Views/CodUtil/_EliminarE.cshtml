@@ -1,0 +1,84 @@
+﻿@using managementPanel.Models
+@{
+    if (TempData["EliminarEquipos"] != null)
+    {
+        if (TempData.Peek("EliminarEquipos").Equals("false"))
+        {
+            <script>
+                Toastify({
+                    text: "Equipo eliminado",
+                    duration: 1500,
+                    gravity: "bottom",
+                    position: "center",
+                    stopOnFocus: true,
+                    style: {
+                        background: "#E14848",
+                    },
+                }).showToast();
+            </script>
+        }
+        else
+        {
+            <script>
+                Toastify({
+                    text: "El equipo tiene usuarios asociados",
+                    duration: 1500,
+                    gravity: "bottom",
+                    position: "center",
+                    stopOnFocus: true,
+                    style: {
+                        background: "#32CD32",
+                    },
+                }).showToast();
+            </script>
+        }
+    }
+}
+
+
+    <table class="table">
+        <thead>
+            <tr class="headTabla">
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Departamento</th>
+                <th>Descripcion</th>
+                @if (((Usuarios)Session["usuario"]).Admin == true)
+                {
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var equipo in Model)
+            {
+
+                <tr class="hoverTabla">
+                    <td>@equipo.IdEquipo</td>
+                    <td>@equipo.Nombre</td>
+                    <td>@equipo.Departamento</td>
+                    <td>@equipo.Descripcion</td>
+
+                    @if (((Usuarios)Session["usuario"]).Admin == true)
+                    {
+
+                        <td>
+                            <a href="@Url.Action("EditarEquipos", "Equipo",  new { equipoSesion = equipo.IdEquipo })" class="btn btn-primary">Editar</a>
+                        </td>
+
+                        <td>
+                            @Ajax.ActionLink("Eliminar", "EliminarEquipos", "Equipo", new { equipoSesion = @equipo.Nombre }, new AjaxOptions()
+                       {
+                           HttpMethod = "GET",
+                           InsertionMode = InsertionMode.Replace,
+                           UpdateTargetId = "misEquipos",
+                       }, new { @class = "btn btn-danger" })
+                        </td>
+                    }
+                </tr>
+            }
+
+        </tbody>
+    </table>

@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "InsertarEquipo";
+}
+
+<div id="divAnadirEquipo">
+    <h2 id="tituloInsertarEquipo">Insertar Equipo</h2>
+
+    <div>
+        <form class="form" method="post">
+            <a href="@Url.Action("ListarEquipos", "Equipo", new {})" class="cruz"><span class="material-symbols-outlined">close</span></a>
+            <div class="form-group">
+                <label for="Nombre">Nombre</label><br />
+                <input name="Nombre" type="text" maxlength="100" required="" class="form-control" placeholder="Nombre" id="EquipoControlar" /><br />
+                <span id="errore" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Departamento">Departamento</label><br />
+                <select name="Departamento" id="Departamento">
+                    <option value="Desarrollo">Desarrollo</option>
+                    <option value="Ampliaciones">Ampliaciones</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Descripcion">Descripcion</label><br />
+                <textarea name="Descripcion" class="form-control" placeholder="Descripcion" id="Descripcion" rows="5" cols="50"></textarea>
+            </div>
+
+            <div class="submit">
+                <input type="submit" value="Registrar" class="btn btn-primary pull-right" id="button-blue" onclick="registrarEToast()" />
+                <div class="ease"></div>
+            </div>
+            <br />
+            <div class="submit">
+                <input type="reset" value="Borrar Campos" class="btn btn-danger pull-right" id="button-reset">
+                <div class="ease"></div>
+            </div>
+        </form>
+    </div>
+</div>
+<br />

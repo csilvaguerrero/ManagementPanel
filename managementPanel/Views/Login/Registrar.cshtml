@@ -1,0 +1,154 @@
+﻿@using managementPanel.Models
+@using Newtonsoft.Json;
+
+@{
+    ViewBag.Title = "Registrar";
+    List<Equipos> dataEquipos = Model[0];
+    Usuarios usuario = Model[1];
+
+
+    if (TempData["msj"] != null)
+    {
+        <script>alert("Error - Usuario no registrado");</script>
+    }
+
+}
+
+<div class="containerRegistrar">
+    <div class="pinkbox">
+        <div class="loginMsg">
+            <div class="textcontent">
+                <p class="title">Bienvenido al proyecto Management</p>
+                <img src="~/ContentManagement/Img/registro.png" />
+            </div>
+        </div>
+    </div>
+    <div class="frontbox">
+        <div class="login">
+            <a href="@Url.Action("ListarUsuarios", "Usuario",  new {})" class="cruz"><span class="material-symbols-outlined">close</span></a>
+            <h2>Usuario nuevo</h2>
+            @using (Html.BeginForm("Registrar", "Login", FormMethod.Post, htmlAttributes: new { id = "form2" }))
+            {
+                <div class="inputbox">
+                    <div class="form-group">
+                        <label for="Nombre">Nombre</label>
+                        @Html.TextBoxFor(model => usuario.Nombre, htmlAttributes: new { @class = "form-control", id = "Nombre", required = "" })<br />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Apellidos">Apellidos</label>
+                        @Html.TextBoxFor(model => usuario.Apellidos, htmlAttributes: new { @class = "form-control", id = "Apellidos", required = "" })<br />
+                    </div>
+
+                    <label for="Equipos">Nombre de los equipos</label>
+                    <div class="multiSelect">
+                        <select multiple class="multiSelect_field" data-placeholder="Añadir equipos" name="equiposId">
+                            @foreach (Equipos e in dataEquipos)
+                            {
+                                <option value=@e.IdEquipo>@e.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="Usuario">Nombre de usuario</label>
+                        @Html.TextBoxFor(model => usuario.Usuario, htmlAttributes: new { @class = "form-control", id = "UsuarioControlar", required = "" })<br />
+                        <span id="error" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Contrasenna">Escriba la contraseña</label>
+                        @Html.PasswordFor(model => usuario.Contrasenna, htmlAttributes: new { @class = "form-control", id = "Contrasenna", required = "" })<br />
+                    </div>
+
+                    <div class="form-group">
+                        @if (Session["usuario"] != null)
+                        {
+                            if (((Usuarios)Session["usuario"]).Admin == true)
+                            {
+                                <label for="JefeProyecto">Perfil:</label>
+                                <select class="form-control" name="rol" id="selectJefeProyecto">
+                                    <option value="Admin"> Admin</option>
+                                    <option value="Técnico"> Técnico</option>
+                                    <option value="Consultor"> Consultor</option>
+                                </select>
+                            }
+                        }
+                    </div>
+                    <div class="submit">
+                        <input type="submit" value="Registrar" class="btn btn-primary pull-right" id="button-blue3" onclick="registrarToast()" />
+                        <div class="ease"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery(function () {
+        jQuery('.multiSelect').each(function (e) {
+            var self = jQuery(this);
+            var field = self.find('.multiSelect_field');
+            var fieldOption = field.find('option');
+            var placeholder = field.attr('data-placeholder');
+
+            field.hide().after(`<div class="multiSelect_dropdown"></div>
+                        <span class="multiSelect_placeholder">` + placeholder + `</span>
+                        <ul class="multiSelect_list"></ul>
+                        <span class="multiSelect_arrow"></span>`);
+
+            fieldOption.each(function (e) {
+                jQuery('.multiSelect_list').append(`<li class="multiSelect_option" data-value="` + jQuery(this).val() + `">
+                                            <a class="multiSelect_text">`+ jQuery(this).text() + `</a>
+                                          </li>`);
+            });
+
+            var dropdown = self.find('.multiSelect_dropdown');
+            var list = self.find('.multiSelect_list');
+            var option = self.find('.multiSelect_option');
+            var optionText = self.find('.multiSelect_text');
+
+            dropdown.attr('data-multiple', 'true');
+            list.css('top', dropdown.height() + 5);
+
+            option.click(function (e) {
+                var self = jQuery(this);
+                e.stopPropagation();
+                self.addClass('-selected');
+                field.find('option:contains(' + self.children().text() + ')').prop('selected', true);
+                dropdown.append(function (e) {
+                    return jQuery('<span class="multiSelect_choice">' + self.children().text() + '<svg class="multiSelect_deselect -iconX"><use href="#iconX"></use></svg></span>').click(function (e) {
+                        var self = jQuery(this);
+                        e.stopPropagation();
+                        self.remove();
+                        list.find('.multiSelect_option:contains(' + self.text() + ')').removeClass('-selected');
+                        list.css('top', dropdown.height() + 5).find('.multiSelect_noselections').remove();
+                        field.find('option:contains(' + self.text() + ')').prop('selected', false);
+                        if (dropdown.children(':visible').length === 0) {
+                            dropdown.removeClass('-hasValue');
+                        }
+                    });
+                }).addClass('-hasValue');
+                list.css('top', dropdown.height() + 5);
+                if (!option.not('.-selected').length) {
+                    list.append('<h5 class="multiSelect_noselections">No hay equipos disponibles</h5>');
+                }
+            });
+
+            dropdown.click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                dropdown.toggleClass('-open');
+                list.toggleClass('-open').scrollTop(0).css('top', dropdown.height() + 5);
+            });
+
+            jQuery(document).on('click touch', function (e) {
+                if (dropdown.hasClass('-open')) {
+                    dropdown.toggleClass('-open');
+                    list.removeClass('-open');
+                }
+            });
+        });
+    });
+</script>

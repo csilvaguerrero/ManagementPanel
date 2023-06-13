@@ -1,0 +1,79 @@
+﻿@using managementPanel.Models
+
+@{
+    ViewBag.Title = "Principal";
+    List<Tuple<DateTime?, string, string, string>> proyectos = Model;
+    int contador = 0;
+}
+
+
+
+<div class="divInicio">
+
+    @{
+        if (((Usuarios)Session["usuario"]) != null)
+        {
+            <div class="content2">
+                <a class="button" target="_parent">
+                    <span class="actual-text">&nbsp;Bienvenido&nbsp;</span>
+                    <span class="hover-text" aria-hidden="true">&nbsp;Bienvenido&nbsp;</span>
+                </a>
+                <p class="textoInicio">
+                    Bienvenido a Management Panel, aquí podrás gestionar toda la información relacionada con usuarios, equipos de trabajos y proyectos.
+                </p>
+            </div>
+
+            if (proyectos.Count > 0)
+            {
+                <div class="divListarProyectos">
+                    <h3>Tareas Pendientes </h3>
+                    <div id="listaPendientes">
+                        @foreach (var p in proyectos)
+                        {
+                            <div>
+                                <span id="nombreItem">
+                                    @p.Item3 <br /><i class="colorGris">
+                                        @if (((Usuarios)Session["usuario"]).Admin == true || ((Usuarios)Session["usuario"]).Consultor == true)
+                                        {@p.Item2}
+                                    </i>
+                                </span>
+                                <span class="material-symbols-outlined">arrow_forward</span>
+                                <span id="entregarItem">Fecha @p.Item4</span>
+                                <span id="fechaItem"><span class="material-symbols-outlined">calendar_month</span>@Convert.ToDateTime(@p.Item1).ToString("dd/MM/yyyy")</span>
+                            </div>
+                            contador++;
+                            if (contador == 6)
+                            {
+                                break;
+                            }
+                        }
+                    </div>
+                    @if (proyectos.Count > 6)
+                    {
+                        <button id="botonListarProyectos">@Html.ActionLink("Ver más", "ProyectosPendientes", "Proyecto")</button>
+                    }
+                </div>
+            }
+            else
+            {
+                <div id="noTareas">
+                    <h2>No tienes proyectos pendientes</h2>
+                </div>
+            }
+
+        }
+        else
+        {
+            <div class="content">
+                <a class="button" target="_parent">
+                    <span class="actual-text">&nbsp;Management&nbsp;Panel&nbsp;</span>
+                    <span class="hover-text" aria-hidden="true">&nbsp;Management&nbsp;Panel&nbsp;</span>
+                </a>
+
+                <p class="textoInicio">Bienvenido a Management Panel, inicia sesión para comenzar a organizar tus equipos de trabajo.</p>
+
+                <button id="botonInicio">@Html.ActionLink("Iniciar Sesión", "IniciarSesion", "Login")</button>
+            </div>
+        }
+    }
+</div>

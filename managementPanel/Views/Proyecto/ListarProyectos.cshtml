@@ -1,0 +1,343 @@
+﻿@model PagedList.IPagedList<managementPanel.Models.Proyectos>
+
+@using managementPanel.Models
+@using PagedList.Mvc
+@using PagedList;
+
+@{
+    ViewBag.Title = "ListarProyectos";
+    int[] pageSizes = new int[] { 10, 25, 50, 100, int.MaxValue };
+    string[] mostrarProyectos = new string[] { "Todos", "Finalizados", "No finalizados" };
+    Type clase = typeof(Proyectos);
+
+    DB_ManagementEntities contexto = new DB_ManagementEntities();
+    List<Usuarios> usuarios = new List<Usuarios>();
+    //Para cargar la tabla
+    if (((Usuarios)Session["usuario"]).Usuario.Equals("admin"))
+    {
+        usuarios = contexto.Usuarios.ToList();
+    }
+    else if (((Usuarios)Session["usuario"]).Admin == true)
+    {
+        var usuarioActual = (Usuarios)Session["usuario"];
+        var idsEquipos = usuarioActual.Equipos.Select(e => e.IdEquipo);
+        usuarios = contexto.Usuarios.Where(u => u.Equipos.Any(e => idsEquipos.Contains(e.IdEquipo))).ToList();
+    }
+
+}
+
+
+
+@section scripts{
+
+    <script>
+        $(function () {
+            $("#buscar").autocomplete({
+                source: "Proyecto/AutoCompletado", minLenght: 10
+            })
+        })
+    </script>
+
+}
+
+<div class="cajaFiltros">
+    <div class="filtros">
+        @using (Html.BeginForm("ListarProyectos", "Proyecto", FormMethod.Post))
+        {
+            <input type="text" name="buscar" id="buscar" value="@ViewBag.buscarC" placeholder="Buscar" />
+            <button type="submit" id="botonBuscar" class="botonBuscar">
+                <span class="material-icons-outlined">search</span>
+            </button>
+
+            <input type="hidden" name="size" value="@ViewBag.pageSize." />
+            <input type="hidden" name="projectS" value="@ViewBag.projectStatus" />
+            <input type="hidden" name="campoOrden" value="@ViewBag.campo" />
+
+        }
+    </div>
+    <div class="filtros">
+        <label>Proyectos:</label>
+        <select class="form-control" onchange="this.options[this.selectedIndex].value && (window.location.href = this.options[this.selectedIndex].value);">
+            @foreach (var fase in mostrarProyectos)
+            {
+                <option value="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = fase, campoOrden = ViewBag.campo, buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect  })" @(ViewBag.projectStatus == fase ? " selected" : "")>@fase</option>
+            }
+        </select>
+    </div>
+    <div class="filtros">
+        <label>Nº de registros:</label>
+        <select class="form-control" onchange="window.location.href=this.value">
+            @foreach (var size in pageSizes)
+            {
+                <option value="@Url.Action("ListarProyectos", new { size = size, projectS = ViewBag.projectStatus, campoOrden = ViewBag.campo, buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect })" @(Model.PageSize == size ? "selected" : "")>@(size == int.MaxValue ? "Todos" : size.ToString())</option>
+            }
+        </select>
+    </div>
+    <div class="filtros">
+        <label>Orden:</label>
+        <select class="form-control" onchange="window.location.href=this.value">
+            @foreach (var campo in clase.GetProperties())
+            {
+                if (!campo.Name.Equals("Usuarios"))
+                {
+                    <option value="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = campo.Name, buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect })" @(ViewBag.campo == campo.Name ? " selected" : "")>@campo.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    @if (((Usuarios)Session["usuario"]).Admin == true)
+    {
+        <div class="filtros">
+            <label>Proyectos de:</label>
+            <select class="form-control" onchange="window.location.href=this.value">
+                <option disabled selected>Elige un usuario</option>
+                @if (((Usuarios)Session["usuario"]).Usuario.Equals("admin"))
+                {
+                    <option value="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, buscar = ViewBag.buscarC, projectS = ViewBag.projectStatus, idUsu = ((Usuarios)Session["usuario"]).IdUsuario})" @(ViewBag.idUsuarioSelect == ((Usuarios)Session["usuario"]).IdUsuario ? " selected" : "")>Ver Todos</option>
+                }
+                else if (((Usuarios)Session["usuario"]).Admin == true)
+                {
+                    <option value="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, buscar = ViewBag.buscarC, projectS = ViewBag.projectStatus, idUsu = ((Usuarios)Session["usuario"]).IdUsuario})" @(ViewBag.idUsuarioSelect == ((Usuarios)Session["usuario"]).IdUsuario ? " selected" : "")>Ver Todos</option>
+                }
+
+                @foreach (var usu in usuarios)
+                {
+                    if (((Usuarios)Session["usuario"]).IdUsuario != usu.IdUsuario)
+                    {
+                        <option value="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, buscar = ViewBag.buscarC, projectS = ViewBag.projectStatus, idUsu = usu.IdUsuario})" @(ViewBag.idUsuarioSelect == usu.IdUsuario ? " selected" : "")>@usu.Nombre</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <a href="#" onclick="eliminarTodos()" class="enl Eliminar">
+            <span class="material-icons-outlined">delete</span>
+        </a>
+
+    }
+
+    <a class="enl Descargar" onclick="exportarTodos()" href="#">
+        <span class="material-icons-outlined">cloud_download</span>
+    </a>
+
+</div>
+
+@if (Model.Count > 0)
+{
+    var pageNumber = ViewBag.pageNumber ?? 1;
+    var pageSize = ViewBag.pageSize ?? 10;
+    var pagedList = new StaticPagedList<Proyectos>(Model, pageNumber, pageSize, Model.Count);
+
+    <div class="cajaTablaProyectos" id="misProyectos">
+        <table class="table">
+            <thead>
+                <tr class="headTabla">
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "Cliente", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Clientes</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "JefeProyecto", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Jefe del Proyecto</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "HorasReales", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Horas reales</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "HorasNormales", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Horas normales</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "HorasEspeciales", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Horas especiales</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "Desviacion", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Desviación</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "Completado", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Completado</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "FechaInicio", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Fecha inicio</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "FechaDisenio", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Fecha diseño</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "FechaValidacion", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Fecha validación</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "FechaEnVivo", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Fecha en vivo</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "FechaRecepcion", buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Fecha recepcion</a></th>
+                    <th><a href="@Url.Action("ListarProyectos", new { size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = "FechaFin", buscar = ViewBag.buscarC, idUsu = ViewBag.idUsuarioSelect, sentido = ViewBag.sentido == "asc" ? "desc" : "asc" })">Fecha fin</a></th>
+                    <th>Detalles</th>
+                    <th>Seleccionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var proyecto in pagedList)
+                {
+                    <tr class="hoverTabla">
+                        <td>@proyecto.Cliente</td>
+                        @if (proyecto.JefeProyecto == null)
+                        {
+                            <td class="sinFecha">X</td>
+                        }
+                        else
+                        {
+                            <td>@proyecto.JefeProyecto</td>
+                        }
+                        <td>@proyecto.HorasReales</td>
+                        <td>@proyecto.HorasNormales</td>
+                        <td>@proyecto.HorasEspeciales</td>
+                        @if (proyecto.Desviacion < 0)
+                        {
+                            <td id="verdeLista">@proyecto.Desviacion</td>
+                        }
+                        else if (proyecto.Desviacion >= 0 && proyecto.Desviacion < 30)
+                        {
+                            <td id="amarilloLista">@proyecto.Desviacion</td>
+                        }
+                        else
+                        {
+                            <td id="rojoLista">@proyecto.Desviacion</td>
+                        }
+                        <td>@proyecto.Completado</td>
+
+                        @if (proyecto.FechaInicio == null)
+                        {
+                            <td class="sinFecha">X</td>
+                        }
+                        else
+                        {
+                            <td>@Convert.ToDateTime(proyecto.FechaInicio).ToString("dd/MM/yyyy")</td>
+                        }
+                        @if (proyecto.FechaDisenio == null)
+                        {
+                            <td class="sinFecha">X</td>
+                        }
+                        else
+                        {
+                            <td>@Convert.ToDateTime(proyecto.FechaDisenio).ToString("dd/MM/yyyy")</td>
+                        }
+                        @if (proyecto.FechaValidacion == null)
+                        {
+                            <td class="sinFecha">X</td>
+                        }
+                        else
+                        {
+                            <td>@Convert.ToDateTime(proyecto.FechaValidacion).ToString("dd/MM/yyyy")</td>
+                        }
+                        @if (proyecto.FechaEnVivo == null)
+                        {
+                            <td class="sinFecha">X</td>
+                        }
+                        else
+                        {
+                            <td>@Convert.ToDateTime(proyecto.FechaEnVivo).ToString("dd/MM/yyyy")</td>
+                        }
+                        @if (proyecto.FechaRecepcion == null)
+                        {
+                            <td class="sinFecha">X</td>
+                        }
+                        else
+                        {
+                            <td>@Convert.ToDateTime(proyecto.FechaRecepcion).ToString("dd/MM/yyyy")</td>
+                        }
+                        @if (proyecto.FechaFin == null)
+                        {
+                            <td class="sinFecha">X</td>
+                        }
+                        else
+                        {
+                            <td>@Convert.ToDateTime(proyecto.FechaFin).ToString("dd/MM/yyyy")</td>
+                        }
+                        <td><a href="@Url.Action("verProyecto", "Proyecto", new { codigo = proyecto.Codigo, page = ViewBag.pageNumber, size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = ViewBag.campo, buscar = ViewBag.buscarC, idUsu=ViewBag.idUsuarioSelect })" class="bntVerProyecto"><span class="material-symbols-outlined verTamanio">visibility</span></a></td>
+
+                        <td>
+                            <input type="checkbox" id="radioButtonEliminar" value=@proyecto.Codigo>
+                        </td>
+
+                    </tr>
+                }
+                @if (((Usuarios)Session["usuario"]).Usuario.Equals("admin"))
+                {
+                    <tr class="filaAnadir">
+                        <td colspan="15">@Html.ActionLink("+", "ImportarProyecto", "Proyecto")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination-container">
+        @Html.PagedListPager(Model, page => Url.Action("ListarProyectos", "Proyecto", new { page, size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = ViewBag.campo, buscar = ViewBag.buscarC, idUsu = ViewBag.idUsuarioSelect }))
+    </div>
+}
+else
+{
+    <h2 class="noDatos">
+        No hay proyectos disponibles
+        @if (((Usuarios)Session["usuario"]).Usuario.Equals("admin"))
+        {
+            <span>@Html.ActionLink("+", "CrearProyecto", "Proyecto")</span>
+        }
+    </h2>
+}
+
+<script>
+    function eliminarTodos() {
+        const radioButtons = document.querySelectorAll('input[type="checkbox"]');
+
+        const valoresSeleccionados = []; 
+
+        radioButtons.forEach(radioButton => {
+            if (radioButton.checked) {
+                valoresSeleccionados.push(radioButton.value);
+                radioButton.checked = false;
+
+ 
+
+            }
+        });
+
+        Swal.fire({
+            title: '¿Estás seguro de que deseas borrar todos los proyectos seleccionados?',
+            showDenyButton: true,
+            showCancelButton: true,
+            showConfirmButton: false, 
+
+            denyButtonText: 'Borrar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isDenied) {
+
+                var uri = '@Url.Action("EliminarProyectos", "Proyecto")';
+                $.ajax({
+                    url: uri,
+                    data: JSON.stringify(valoresSeleccionados),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    success: function() {
+                    var url = '@Url.Action("ListarProyectos", "Proyecto")';
+                    window.location.href = url; 
+
+                    }
+                });
+            }
+            else
+            {
+                Swal.fire('Cancelado', '', 'error')
+                resolve('Cancelar');
+            }
+        })
+
+    }
+
+    function exportarTodos() {
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        const valoresSeleccionados = [];
+
+ 
+
+        radioButtons.forEach(radioButton => {
+        if (radioButton.checked) {
+            valoresSeleccionados.push(radioButton.value);
+            radioButton.checked = false;
+        }
+        });
+
+ 
+
+        var uri = '@Url.Action("ExportarProyecto", "Proyecto")';
+        $.ajax({
+        url: uri,
+        data: { valoresSeleccionados: valoresSeleccionados },
+        type: 'POST',
+        success: function(data) {
+            var blob = new Blob([data], { type: 'text/csv' });
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'proyectos.csv';
+            link.click();
+            var url = '@Url.Action("ListarProyectos", "Proyecto")';
+            window.location.href = url;
+        }
+        });
+    }
+</script>

@@ -1,0 +1,554 @@
+﻿@using managementPanel.Models;
+
+@{
+    ViewBag.Title = "Proyecto";
+    Proyectos proyecto = Model;
+}
+<div class="cajaVerProyecto">
+
+    <div id="verHoras">
+        <div id="cajaHoras">
+            <span>Horas Normales: </span>
+            <p>@proyecto.HorasNormales</p>
+
+            <span>Horas Especiales: </span>
+            <p>@proyecto.HorasEspeciales</p>
+
+            <span>Horas Reales: </span>
+            <p>@proyecto.HorasReales</p>
+
+            <span>Horas Analisis: </span>
+            <p>@proyecto.HorasAnalisis</p>
+        </div>
+        <div id="cajaDesviacion">
+            <span id="nombreDesviacion">Desviación</span>
+            <div id="flexDesviacion">
+                <div>
+                    <span>Total: </span>
+                    @if (proyecto.Desviacion < 0)
+                    {
+                        <p id="verde">@proyecto.Desviacion</p>
+                    }
+                    else if (proyecto.Desviacion >= 0 && proyecto.Desviacion < 30)
+                    {
+                        <p id="amarillo">@proyecto.Desviacion</p>
+                    }
+                    else
+                    {
+                        <p id="rojo">@proyecto.Desviacion</p>
+                    }
+                </div>
+                <div>
+                    <span>Análisis: </span>
+                    <p class="blanco">@proyecto.DesviacionAnalisis</p>
+                </div>
+                <div>
+                    <span>Desarrollo: </span>
+                    <p class="blanco">@proyecto.DesviacionDesarrollo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="verDatos">
+        <table id="tablaDatos">
+            <tr>
+                <td><span>Nombre: </span></td>
+                <td id="nombre">@proyecto.Nombre</td>
+            </tr>
+            <tr>
+                <td><span>Completado: </span></td>
+                <td>@proyecto.Completado%</td>
+            </tr>
+            <tr>
+                <td><span>Fase: </span></td>
+                <td>@proyecto.Fase</td>
+            </tr>
+            <tr>
+                <td><span>Cliente: </span></td>
+                <td id="cliente">@proyecto.Cliente</td>
+            </tr>
+            <tr>
+                <td><span>Jefe del Proyecto: </span></td>
+
+                @if (proyecto.JefeProyecto == null)
+                {
+                    <td>No hay Jefe de Proyecto</td>
+                }
+                else
+                {
+                    <td>@proyecto.JefeProyecto</td>
+                }
+
+            </tr>
+            <tr>
+                <td><span>Consultor: </span></td>
+                @if (proyecto.Consultor == null)
+                {
+                    <td>No hay consultor</td>
+                }
+                else
+                {
+                    <td>@proyecto.Consultor</td>
+                }
+            </tr>
+            <tr>
+                <td><span>Codigo: </span></td>
+                <td>@proyecto.Codigo</td>
+            </tr>
+            <tr>
+                <td><span>Codigo Oferta: </span></td>
+                <td>@proyecto.CodigoOferta</td>
+            </tr>
+            <tr>
+                <td><span>Replanificaciones: </span></td>
+                @if (proyecto.Replanificaciones == null)
+                {
+                    <td>No hay ninguna replanificación</td>
+                }
+                else
+                {
+                    <td>@proyecto.Replanificaciones</td>
+                }
+            </tr>
+            <tr>
+                <td><span>Incidencias: </span></td>
+                @if (proyecto.Incidencias == null)
+                {
+                    <td>No hay incidencias</td>
+                }
+                else
+                {
+                    <td>@proyecto.Incidencias</td>
+                }
+            </tr>
+        </table>
+    </div>
+
+    <div id="verFechas">
+        @if (proyecto.FechaComienzo != null)
+        {
+            <div>
+                <span>Fecha Comienzo</span>
+                <div class="calendar">
+                    <div id="monthName">
+                        @switch (proyecto.FechaComienzo.ToString("MM"))
+                        {
+                            case "01":
+                                {<div>ENERO</div> break;
+                                }
+                            case "02":
+                                {<div>FEBRERO</div> break;
+                                }
+                            case "03":
+                                {<div>MARZO</div> break;
+                                }
+                            case "04":
+                                {<div>ABRIL</div> break;
+                                }
+                            case "05":
+                                {<div>MAYO</div> break;
+                                }
+                            case "06":
+                                {<div>JUNIO</div> break;
+                                }
+                            case "07":
+                                {<div>JULIO</div> break;
+                                }
+                            case "08":
+                                {<div>AGOSTO</div> break;
+                                }
+                            case "09":
+                                {<div>SEPTIEMBRE</div> break;
+                                }
+                            case "10":
+                                {<div>OCTUBRE</div> break;
+                                }
+                            case "11":
+                                {<div>NOVIEMBRE</div> break;
+                                }
+                            case "12":
+                                {<div>DICIEMBRE</div>break;
+                                }
+                        }
+                    </div>
+                    <div id="dayNumber">@proyecto.FechaComienzo.ToString("dd")</div>
+                    <div id="year">@proyecto.FechaComienzo.ToString("yyyy")</div>
+                </div>
+            </div>
+        }
+        @if (proyecto.FechaInicio != null)
+        {
+            <div>
+                <span>Fecha Inicio</span>
+                <div class="calendar">
+                    <div id="monthName">
+                        @switch (Convert.ToDateTime(proyecto.FechaInicio).ToString("MM"))
+                        {
+                            case "01":
+                                {<div>ENERO</div> break;
+                                }
+                            case "02":
+                                {<div>FEBRERO</div> break;
+                                }
+                            case "03":
+                                {<div>MARZO</div> break;
+                                }
+                            case "04":
+                                {<div>ABRIL</div> break;
+                                }
+                            case "05":
+                                {<div>MAYO</div> break;
+                                }
+                            case "06":
+                                {<div>JUNIO</div> break;
+                                }
+                            case "07":
+                                {<div>JULIO</div> break;
+                                }
+                            case "08":
+                                {<div>AGOSTO</div> break;
+                                }
+                            case "09":
+                                {<div>SEPTIEMBRE</div> break;
+                                }
+                            case "10":
+                                {<div>OCTUBRE</div> break;
+                                }
+                            case "11":
+                                {<div>NOVIEMBRE</div> break;
+                                }
+                            case "12":
+                                {<div>DICIEMBRE</div>break;
+                                }
+                        }
+                    </div>
+                    <div id="dayNumber">@Convert.ToDateTime(proyecto.FechaInicio).ToString("dd")</div>
+                    <div id="year">@Convert.ToDateTime(proyecto.FechaInicio).ToString("yyyy")</div>
+                </div>
+            </div>
+        }
+        @if (proyecto.FechaDisenio != null)
+        {
+            <div>
+                <span>Fecha Diseño</span>
+                <div class="calendar">
+                    <div id="monthName">
+                        @switch (Convert.ToDateTime(proyecto.FechaDisenio).ToString("MM"))
+                        {
+                            case "01":
+                                {<div>ENERO</div> break;
+                                }
+                            case "02":
+                                {<div>FEBRERO</div> break;
+                                }
+                            case "03":
+                                {<div>MARZO</div> break;
+                                }
+                            case "04":
+                                {<div>ABRIL</div> break;
+                                }
+                            case "05":
+                                {<div>MAYO</div> break;
+                                }
+                            case "06":
+                                {<div>JUNIO</div> break;
+                                }
+                            case "07":
+                                {<div>JULIO</div> break;
+                                }
+                            case "08":
+                                {<div>AGOSTO</div> break;
+                                }
+                            case "09":
+                                {<div>SEPTIEMBRE</div> break;
+                                }
+                            case "10":
+                                {<div>OCTUBRE</div> break;
+                                }
+                            case "11":
+                                {<div>NOVIEMBRE</div> break;
+                                }
+                            case "12":
+                                {<div>DICIEMBRE</div>break;
+                                }
+                        }
+                    </div>
+                    <div id="dayNumber">@Convert.ToDateTime(proyecto.FechaDisenio).ToString("dd")</div>
+                    <div id="year">@Convert.ToDateTime(proyecto.FechaDisenio).ToString("yyyy")</div>
+                </div>
+            </div>
+        }
+        @if (proyecto.FechaValidacion != null)
+        {
+            <div>
+                <span>Fecha Validacion</span>
+                <div class="calendar">
+                    <div id="monthName">
+                        @switch (Convert.ToDateTime(proyecto.FechaValidacion).ToString("MM"))
+                        {
+                            case "01":
+                                {<div>ENERO</div> break;
+                                }
+                            case "02":
+                                {<div>FEBRERO</div> break;
+                                }
+                            case "03":
+                                {<div>MARZO</div> break;
+                                }
+                            case "04":
+                                {<div>ABRIL</div> break;
+                                }
+                            case "05":
+                                {<div>MAYO</div> break;
+                                }
+                            case "06":
+                                {<div>JUNIO</div> break;
+                                }
+                            case "07":
+                                {<div>JULIO</div> break;
+                                }
+                            case "08":
+                                {<div>AGOSTO</div> break;
+                                }
+                            case "09":
+                                {<div>SEPTIEMBRE</div> break;
+                                }
+                            case "10":
+                                {<div>OCTUBRE</div> break;
+                                }
+                            case "11":
+                                {<div>NOVIEMBRE</div> break;
+                                }
+                            case "12":
+                                {<div>DICIEMBRE</div>break;
+                                }
+                        }
+                    </div>
+                    <div id="dayNumber">@Convert.ToDateTime(proyecto.FechaValidacion).ToString("dd")</div>
+                    <div id="year">@Convert.ToDateTime(proyecto.FechaValidacion).ToString("yyyy")</div>
+                </div>
+            </div>
+        }
+        @if (proyecto.FechaEnVivo != null)
+        {
+            <div>
+                <span>Fecha En Vivo</span>
+                <div class="calendar">
+                    <div id="monthName">
+                        @switch (Convert.ToDateTime(proyecto.FechaEnVivo).ToString("MM"))
+                        {
+                            case "01":
+                                {<div>ENERO</div> break;
+                                }
+                            case "02":
+                                {<div>FEBRERO</div> break;
+                                }
+                            case "03":
+                                {<div>MARZO</div> break;
+                                }
+                            case "04":
+                                {<div>ABRIL</div> break;
+                                }
+                            case "05":
+                                {<div>MAYO</div> break;
+                                }
+                            case "06":
+                                {<div>JUNIO</div> break;
+                                }
+                            case "07":
+                                {<div>JULIO</div> break;
+                                }
+                            case "08":
+                                {<div>AGOSTO</div> break;
+                                }
+                            case "09":
+                                {<div>SEPTIEMBRE</div> break;
+                                }
+                            case "10":
+                                {<div>OCTUBRE</div> break;
+                                }
+                            case "11":
+                                {<div>NOVIEMBRE</div> break;
+                                }
+                            case "12":
+                                {<div>DICIEMBRE</div>break;
+                                }
+                        }
+                    </div>
+                    <div id="dayNumber">@Convert.ToDateTime(proyecto.FechaEnVivo).ToString("dd")</div>
+                    <div id="year">@Convert.ToDateTime(proyecto.FechaEnVivo).ToString("yyyy")</div>
+                </div>
+            </div>
+        }
+        @if (proyecto.FechaRecepcion != null)
+        {
+            <div>
+                <span>Fecha Recepcion</span>
+                <div class="calendar">
+                    <div id="monthName">
+                        @switch (Convert.ToDateTime(proyecto.FechaRecepcion).ToString("MM"))
+                        {
+                            case "01":
+                                {<div>ENERO</div> break;
+                                }
+                            case "02":
+                                {<div>FEBRERO</div> break;
+                                }
+                            case "03":
+                                {<div>MARZO</div> break;
+                                }
+                            case "04":
+                                {<div>ABRIL</div> break;
+                                }
+                            case "05":
+                                {<div>MAYO</div> break;
+                                }
+                            case "06":
+                                {<div>JUNIO</div> break;
+                                }
+                            case "07":
+                                {<div>JULIO</div> break;
+                                }
+                            case "08":
+                                {<div>AGOSTO</div> break;
+                                }
+                            case "09":
+                                {<div>SEPTIEMBRE</div> break;
+                                }
+                            case "10":
+                                {<div>OCTUBRE</div> break;
+                                }
+                            case "11":
+                                {<div>NOVIEMBRE</div> break;
+                                }
+                            case "12":
+                                {<div>DICIEMBRE</div>break;
+                                }
+                        }
+                    </div>
+                    <div id="dayNumber">@Convert.ToDateTime(proyecto.FechaRecepcion).ToString("dd")</div>
+                    <div id="year">@Convert.ToDateTime(proyecto.FechaRecepcion).ToString("yyyy")</div>
+                </div>
+            </div>
+        }
+        @if (proyecto.FechaFin != null)
+        {
+            <div>
+                <span>Fecha Fin</span>
+                <div class="calendar">
+                    <div id="monthName">
+                        @switch (Convert.ToDateTime(proyecto.FechaFin).ToString("MM"))
+                        {
+                            case "01":
+                                {<div>ENERO</div> break;
+                                }
+                            case "02":
+                                {<div>FEBRERO</div> break;
+                                }
+                            case "03":
+                                {<div>MARZO</div> break;
+                                }
+                            case "04":
+                                {<div>ABRIL</div> break;
+                                }
+                            case "05":
+                                {<div>MAYO</div> break;
+                                }
+                            case "06":
+                                {<div>JUNIO</div> break;
+                                }
+                            case "07":
+                                {<div>JULIO</div> break;
+                                }
+                            case "08":
+                                {<div>AGOSTO</div> break;
+                                }
+                            case "09":
+                                {<div>SEPTIEMBRE</div> break;
+                                }
+                            case "10":
+                                {<div>OCTUBRE</div> break;
+                                }
+                            case "11":
+                                {<div>NOVIEMBRE</div> break;
+                                }
+                            case "12":
+                                {<div>DICIEMBRE</div>break;
+                                }
+                        }
+                    </div>
+                    <div id="dayNumber">@Convert.ToDateTime(proyecto.FechaFin).ToString("dd")</div>
+                    <div id="year">@Convert.ToDateTime(proyecto.FechaFin).ToString("yyyy")</div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+    <div id="cajaOpciones">
+        @using (Html.BeginForm("verProyecto", "Proyecto", FormMethod.Post))
+        {
+            <a href="@Url.Action("ListarProyectos", "Proyecto", new { page = ViewBag.pageNumber, size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = ViewBag.campo, buscar = ViewBag.buscarC })" class="botonVolver"><span class="material-symbols-outlined">undo</span></a>
+        }
+
+        @if (((Usuarios)Session["usuario"]).Admin == true)
+        {
+            <a href="@Url.Action("EditarProyecto", "Proyecto", new { codigo = proyecto.Codigo, page = ViewBag.pageNumber, size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = ViewBag.campo, buscar = ViewBag.buscarC })" class="botonEditar"><span class="material-symbols-outlined">edit_square</span></a>
+
+
+
+            <form method="post" id="form1" action="@Url.Action("EliminarProyecto", "Proyecto", new { codigo = proyecto.Codigo, page = ViewBag.pageNumber, size = ViewBag.pageSize, projectS = ViewBag.projectStatus, campoOrden = ViewBag.campo, buscar = ViewBag.buscarC })">
+                <input type="hidden" name="borrarProyecto" id="borrarProyecto" value="" />
+                <button type="submit" class="botonBorrar" onclick="event.preventDefault(); confirmacionBorradoProyectos('@proyecto.Nombre').then((opcion) => { document.getElementById('borrarProyecto').value = opcion; document.getElementById('form1').submit(); });"><span class="material-symbols-outlined">delete</span></button>
+            </form>
+        }
+        <a href="@Url.Action("TableroTareas", "Tarea", new { idProyecto = proyecto.Codigo})" id="btnVerListadoTareas"><span class="material-symbols-outlined">table_chart</span></a>
+    </div>
+</div>
+
+<script>
+    function confirmacionBorradoProyectos(nombre) {
+        console.log(nombre)
+        return new Promise((resolve) => {
+            Swal.fire({
+                title: '¿Estás seguro de que deseas borrar el proyecto ' + nombre + '?',
+                showDenyButton: true,
+                showCancelButton: true,
+                showConfirmButton: false,
+                denyButtonText: 'Borrar',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isDenied) {
+                    Swal.fire('Proyecto eliminado con éxito', '', 'success')
+                    resolve('Borrar');
+                } else {
+                    Swal.fire('Cancelado', '', 'error')
+                    resolve('Cancelar');
+                }
+            })
+        });
+    }
+
+    let nombreTd = document.getElementById("nombre");
+    let nombre = nombreTd.innerText;
+
+    if (nombre.length > 30) {
+        nombreTd.innerText = nombre.substring(0, 35) + "...";
+    }
+
+    nombreTd.setAttribute("title", nombre);
+
+    let clienteTd = document.getElementById("cliente");
+    let cliente = clienteTd.innerText;
+
+
+
+    if (cliente.length > 35) {
+        clienteTd.innerText = cliente.substring(0, 35) + "...";
+    }
+
+
+
+    clienteTd.setAttribute("title", cliente);
+</script>

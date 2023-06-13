@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "Inicio de Sesion";
+
+    if (TempData["msjInicio"] != null)
+    {
+        switch (ViewBag.msjInicio)
+        {
+            case "noUsu":
+                <div class="noUsu">
+                    No existe el usuario que has introducido
+                </div>
+                break;
+            case "noCont":
+                <div class="noUsu">
+                    La contraseña es incorrecta
+                </div>
+                break;
+        }
+    }
+}
+
+<div class="containerLogin">
+    <div class="blackbox">
+        <div class="loginMsg">
+            <div class="textcontent">
+                <p class="title">Bienvenido a Management Panel</p>
+                @*<p>¿No tienes cuenta?</p>
+                    <button>@Html.ActionLink("Registrar", "Registrar", "Login")</button>*@
+            </div>
+        </div>
+    </div>
+    <div class="frontbox">
+        <div class="login">
+            <h2>Iniciar sesión</h2>
+            @using (Html.BeginForm("IniciarSesion", "Login", FormMethod.Post, htmlAttributes: new { id = "form2" }))
+            {
+                <div class="inputbox">
+                    <div class="form-group">
+                        <label for="Usuario">Nombre de usuario</label>
+                        <input name="Usuario" type="text" maxlength="100" required="" class="form-control" placeholder="Usuario" id="Usuario" />
+                        <span id="error" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Contrasenna">Escriba la contraseña</label>
+                        <!--Html.TextBoxFor(model => usuario.Contrasenna, htmlAttributes: new { class = "form-control", id = "Contrasenna", type = "password", required = "" })<br />-->
+                        <input name="Contrasenna" type="password" maxlength="100" required="" class="form-control" placeholder="Contraseña" id="Contrasenna" />
+                    </div>
+                </div>
+                <div class="submit">
+                    <input type="submit" value="Iniciar Sesión" class="btn btn-primary pull-right" id="button-blue" />
+                    <div class="ease"></div>
+                </div>
+                <br>
+                <div class="submit">
+                    <input type="reset" value="Borrar Campos" class="btn btn-danger pull-right" id="button-reset">
+                    <div class="ease"></div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

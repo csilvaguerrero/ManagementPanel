@@ -1,0 +1,144 @@
+﻿@using managementPanel.Models
+
+@{
+    ViewBag.Title = "Ver Estadisticas";
+    List<Proyectos> proyectos = Model[0];
+    List<Usuarios> usuariosEquipos = Model[1];
+
+}
+
+
+
+<h2>Ver Estadisticas</h2>
+
+<script src="~/Scripts/chart.js"></script>
+<script src="~/Scripts/chart.min.js"></script>
+
+@if (((Usuarios)Session["usuario"]).Admin == true && proyectos.Count() == 0)
+{
+    <div>
+        <p>Usuarios de mis equipos:</p>
+        <select class="form-control" onchange="this.options[this.selectedIndex].value && (window.location.href = this.options[this.selectedIndex].value);">
+            @foreach (Usuarios u in usuariosEquipos)
+            {
+                <option value="@Url.Action("VerEstadisticas", new { usuarioId = u.IdUsuario})" )>@u.Usuario</option>
+            }
+        </select>
+    </div>
+}
+else
+{
+
+    <form id="formGrafica">
+        <label for="fechaInicio">Fecha de inicio:</label>
+        <input type="date" name="fechaInicio" id="fechaInicio" class="campoProyecto">
+
+        <label for="fechaInicio">Fecha de Fin:</label>
+        <input type="date" name="fechaFin" id="fechaFin" class="campoProyecto">
+
+        <input type="hidden" name="idUsu" id="idUsu" value=@ViewBag.UsuSelect />
+
+        <input type="submit" value="Ver facturacion" id="btnFacturacion" />
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre del proyecto</th>
+                <th>fi</th>
+                <th>ff</th>
+                <th>fase</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Proyectos p in proyectos)
+            {
+                <tr>
+                    <td>@p.Nombre</td>
+                    <td>@p.FechaInicio</td>
+                    <td>@p.FechaFin</td>
+                    <td>@p.Fase</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3 id="tituloFacturar"></h3>
+    <div class="pruebaGr" id="divfact">
+        <canvas  id="contenedorGrafica"  height="100"></canvas>
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+            $('#formGrafica').on('submit', function (event) {
+                event.preventDefault(); // Evitar el envío convencional del formulario
+                facturacion(); // Llamar a la función JS para enviar los datos al servidor
+            });
+        });
+
+        var chart = null;
+        function facturacion() {
+
+            // Obtener los valores del formulario
+            const fechaInicio = $('#fechaInicio').val();
+            const fechaFin = $('#fechaFin').val();
+            const usu = $('#idUsu').val();
+
+            $.ajax({
+                url: '/Estadistica/VerFacturacion',
+                type: 'GET',
+                data: {
+                    usu: usu,
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin
+                },
+                dataType: "json",
+
+                success: function (fechaHoras) {
+                    var data = {
+                        labels: [],
+                        datasets: [{
+                            label: 'Horas',
+                            data: [],
+                            backgroundColor: 'rgba(178, 62, 241, 0.2)',
+                            borderColor: 'rgba(213, 164, 240 )',
+                            borderWidth: 2
+                        }]
+                    };
+
+                    for (var key in fechaHoras) {
+                        data.labels.push(key);
+                        data.datasets[0].data.push(fechaHoras[key]);
+                    }
+
+                    var ctx = document.getElementById('contenedorGrafica').getContext('2d');
+
+                    var chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                    let x = $("#tituloFacturar");
+                    x.text("Grafica Facturación");
+
+                },
+                error: function () {
+                    alert('No conseguido');
+                },
+            });
+
+            // Devolver false para evitar que el formulario se envíe de forma convencional
+            return false;
+        }
+    </script>
+}
+

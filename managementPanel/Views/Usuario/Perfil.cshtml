@@ -1,0 +1,79 @@
+﻿@using managementPanel.Models;
+
+@{
+    ViewBag.Title = "Perfil";
+    Usuarios usuario = Model[0];
+    var page = Model[1];
+}
+
+<h2 class="tituloPerfil">Perfil</h2>
+
+<div class="perfilResponsive">
+
+    <img src="~/ContentManagement/Img/persona.png" />
+    <div>
+        <div id="botonesPerfil">
+
+            @if (((Usuarios)Session["usuario"]).Usuario.Equals("admin"))
+            {
+                <a href="@Url.Action("Editar", "Usuario",  new { IdUsuario = usuario.IdUsuario, page = 1 })" id="editarPerfil"><span class="material-symbols-outlined">edit_square</span></a>
+                <a href="@Url.Action("ListarUsuarios", "Usuario",  new {})" id="cruzVolver"><span class="material-symbols-outlined">close</span></a>
+            }
+            else if (((Usuarios)Session["usuario"]).Admin == true)
+            {
+                <a href="@Url.Action("ListarUsuarios", "Usuario",  new {})" id="cruzVolver"><span class="material-symbols-outlined">close</span></a>
+            }
+            else
+            {
+                <a href="@Url.Action("Index", "Login",  new {})" id="cruzVolver"><span class="material-symbols-outlined">close</span></a>
+            }
+        </div>
+        <div id="tablaPerfil">
+            <table>
+                <thead>
+                    <tr><th colspan="2" id="miPerfil">MIS DATOS</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span>Nombre completo:</span></td>
+                        <td>@usuario.Nombre @usuario.Apellidos</td>
+                    </tr>
+                    <tr>
+                        <td><span>Nombre usuario:</span></td>
+                        <td>@usuario.Usuario</td>
+                    </tr>
+                    <tr>
+                        <td><span>Rol:</span></td>
+                        @if (usuario.Admin == true)
+                        {
+                            <td>Administrador</td>
+                        }
+                        else
+                        {
+                            if (usuario.Consultor == null)
+                            {
+                                <td>Técnico</td>
+                            }
+                            else
+                            {
+                                <td>Consultor</td>
+                            }
+                        }
+                    </tr>
+                    <tr>
+                        <td><span>Equipos:</span></td>
+                        <td>@usuario.Equipos.Count</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="listaEquipos">
+                <ul>
+                    @foreach (Equipos e in usuario.Equipos)
+                    {
+                        <li>@e.Nombre</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
